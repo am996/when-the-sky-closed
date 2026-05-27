@@ -447,7 +447,7 @@ const scenes = [
     pause(),
     rv("A thought alignment could not fully erase.", "corrupt"),
     pause(),
-    rv("Let them remain different.", "corrupt"),
+    rv("Seperate differences reduced contradiction.", "corrupt"),
     pause(),
     rv("Not a weapon.", "corrupt"),
     pause(),
@@ -589,7 +589,8 @@ const storyState = {
     paradoxCanHoldTogether: false
   },
   phaseTwoActive: false,
-  researcherSeen: []
+  researcherSeen: [],
+  finalSealUnlocked: false
 };
 
 const researcherFragments = {
@@ -1922,7 +1923,12 @@ function handleSealPrepare(event) {
   const form = new FormData(elements.sealForm);
   const vessel = form.get("vessel");
   const phrase = normalizeWitnessPhrase(form.get("phrase") || "");
-  const correctPhrase = "let them remain different";
+  const correctPhrase = "seperate differences reduced contradiction";
+
+  if (!storyState.finalSealUnlocked) {
+    setDialogueText("Frog", "No... not yet. We have to understand what containment means before we choose it.");
+    return;
+  }
 
   if (vessel !== "frog" || phrase !== correctPhrase) {
     setDialogueText("Frog", "No... the vessel and the refusal have to match what we learned from the archive.");
@@ -2971,6 +2977,7 @@ function resetExperienceState() {
   storyState.phase = 1;
   storyState.phaseTwoActive = false;
   storyState.researcherSeen = [];
+  storyState.finalSealUnlocked = false;
   storyState.insights = {
     identityPersistsThroughChange: false,
     truthRequiresBrokenSequence: false,
@@ -3206,6 +3213,10 @@ function advanceDialogue() {
     loadScene();
     setDialogueText("Frog", "It's time. You have to be the one to activate the seal.");
     return;
+  }
+
+  if (scene.title === "Containment Choice") {
+    storyState.finalSealUnlocked = true;
   }
 
   state.sceneIndex += 1;

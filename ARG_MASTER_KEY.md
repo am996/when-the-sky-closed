@@ -43,6 +43,15 @@ Phase 2 now continues in-game after the Phase 1 gate release. The systems no lon
 5.  **Observer Collapse:** Frog understands why fractured memory preserved him.
 6.  **Containment Choice / Final Seal:** choose Frog, enter the refusal, and manually activate containment.
 
+### Phase 2 Skip Check
+In normal play, Phase 2 cannot be skipped:
+
+*   The HERTA archive scene only advances after the containment thesis is accepted.
+*   The spectrogram scene only advances after the exact decoded URL is submitted.
+*   The Final Seal only accepts its answer after the player has reached it through **Containment Choice**.
+
+The final seal phrase alone is not enough. If the game has not unlocked the containment choice state, Frog refuses with: `No... not yet. We have to understand what containment means before we choose it.`
+
 ### Researcher Fragments
 Researchers from the pregame are now integrated as **fragmented consciousnesses**, not ghosts. They are incomplete observer states, partially aligned humans trapped between realities.
 
@@ -237,7 +246,7 @@ After the link is accepted, the game continues to the local **Researcher Recordi
 ### Researcher Recording Key
 The recording reveals the final refusal phrase:
 
-`Let them remain different.`
+`Seperate differences reduced contradiction.`
 
 This phrase is the required answer for the later Final Seal. It also confirms the main Phase 2 truth: contradictions were not flaws, they were barriers that preserved separation.
 
@@ -270,10 +279,26 @@ Frog did not survive because he was stronger than the researchers. He survived b
 
 ### ✅ Solution
 1.  Choose **Frog** as the vessel.
-2.  In the final refusal field, enter: `let them remain different`.
+2.  In the final refusal field, enter: `seperate differences reduced contradiction`.
 3.  Click **Prepare Seal**.
 4.  Read Frog's realization sequence.
 5.  When the game returns to the Final Seal panel, click **Activate Final Seal**.
+
+### Final Cutscene Trigger
+What actually triggers the ending sequence:
+
+1.  The player must have reached the Final Seal through Phase 2 and **Containment Choice**. The phrase alone will not work early.
+2.  **Prepare Seal** with:
+    *   Vessel: `Frog`
+    *   Final refusal: `seperate differences reduced contradiction`
+3.  This starts Frog's realization cutscene, **The Sky Closed**.
+4.  After that scene ends and the Final Seal panel returns, click **Activate Final Seal**.
+5.  That click starts the final ending cutscene, **The Sky Closed - Final Moments**.
+
+The phrase is normalized by the game, so capitalization and punctuation do not matter. The spelling currently must be `seperate`, matching the intended phrase.
+
+### Drive Note
+The Google Drive is not embedded as a visible page. The website asks players to type the decoded Drive folder URL into the Encoded Signal / Spectrogram Gate. Once the exact URL is submitted, the browser experience continues into the local Researcher Recording scene.
 
 The final scene ends with:
 
