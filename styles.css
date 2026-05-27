@@ -1,0 +1,373 @@
+:root {
+  color-scheme: dark;
+  --paper: #f6efe3;
+  --ink: #fff8ed;
+  --muted: #d7c7ad;
+  --shadow: rgba(7, 10, 18, 0.68);
+  --panel: rgba(18, 22, 32, 0.76);
+  --line: rgba(255, 241, 214, 0.2);
+  --glow: rgba(255, 196, 122, 0.22);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  background: #121620;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button {
+  font: inherit;
+}
+
+.game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  min-height: 560px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #121620;
+}
+
+.background-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-position: center;
+  background-size: cover;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: opacity 1100ms ease, transform 2000ms ease;
+}
+
+.background-layer.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(8, 12, 24, 0.1), rgba(8, 12, 24, 0.48)),
+    radial-gradient(circle at 50% 35%, rgba(255, 231, 186, 0.18), transparent 36%),
+    linear-gradient(90deg, rgba(3, 6, 12, 0.46), transparent 28%, transparent 72%, rgba(3, 6, 12, 0.44));
+}
+
+.effect-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 5px);
+  mix-blend-mode: screen;
+  transition: opacity 280ms ease;
+}
+
+.game.is-shaking {
+  animation: screen-shake 420ms linear infinite;
+}
+
+.game.is-corrupt .effect-overlay,
+.game.is-flashing .effect-overlay {
+  opacity: 0.78;
+}
+
+.game.is-corrupt .background-layer {
+  filter: saturate(1.65) contrast(1.18) hue-rotate(18deg);
+}
+
+.game.is-blackout .background-layer,
+.game.is-blackout .atmosphere,
+.game.is-blackout .stage {
+  opacity: 0;
+}
+
+.audio-toggle {
+  position: absolute;
+  top: clamp(14px, 2vw, 24px);
+  right: clamp(14px, 2vw, 24px);
+  z-index: 5;
+  min-width: 104px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(14, 18, 28, 0.54);
+  color: var(--paper);
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.audio-toggle:hover,
+.audio-toggle:focus-visible,
+.continue-button:hover,
+.continue-button:focus-visible,
+.puzzle-button:hover,
+.puzzle-button:focus-visible {
+  border-color: rgba(255, 230, 184, 0.48);
+  outline: none;
+}
+
+.stage {
+  position: absolute;
+  inset: 5vh 0 25vh;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 clamp(18px, 8vw, 120px);
+  pointer-events: none;
+}
+
+.stage[data-position="left"] {
+  justify-content: flex-start;
+}
+
+.stage[data-position="right"] {
+  justify-content: flex-end;
+}
+
+.stage[data-speaker="Time Keeper"] {
+  inset: 8vh 0 clamp(150px, 24vh, 230px);
+  padding-right: clamp(18px, 4vw, 72px);
+}
+
+.sprite {
+  max-width: min(46vw, 480px);
+  max-height: 72vh;
+  object-fit: contain;
+  filter: drop-shadow(0 26px 34px rgba(0, 0, 0, 0.42));
+  opacity: 0;
+  transform: translateY(18px) scale(0.98);
+  transition: opacity 620ms ease, transform 760ms ease;
+  will-change: opacity, transform;
+}
+
+.sprite.is-preparing {
+  transition: none;
+  opacity: 0;
+}
+
+.stage[data-speaker="Time Keeper"] .sprite {
+  max-width: min(54vw, 620px);
+  max-height: 82vh;
+  transform: translateY(28px) scale(1.04);
+}
+
+.sprite.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.stage[data-speaker="Time Keeper"] .sprite.is-visible {
+  transform: translateY(34px) scale(1.1);
+}
+
+.dialogue-box {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(18px, 3vh, 32px);
+  z-index: 4;
+  width: min(1120px, calc(100vw - 36px));
+  min-height: clamp(220px, 25vh, 300px);
+  padding: clamp(24px, 3vw, 36px);
+  padding-right: clamp(132px, 18vw, 190px);
+  border: 2px solid rgba(255, 222, 154, 0.38);
+  border-radius: 30px;
+  background:
+    linear-gradient(135deg, rgba(92, 56, 126, 0.78), rgba(20, 31, 58, 0.8) 48%, rgba(91, 57, 42, 0.76)),
+    rgba(18, 22, 32, 0.84);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 0 54px rgba(255, 182, 95, 0.32),
+    0 28px 90px rgba(0, 0, 0, 0.46);
+  transform: translateX(-50%);
+  backdrop-filter: blur(18px);
+}
+
+.speaker {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 234, 190, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 214, 142, 0.14);
+  color: #ffe7a8;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dialogue-text {
+  max-width: 74ch;
+  min-height: 3.5em;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.28rem, 2.5vw, 1.75rem);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.dialogue-actions {
+  position: absolute;
+  right: clamp(16px, 3vw, 26px);
+  bottom: clamp(14px, 2.5vw, 22px);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.continue-button,
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 241, 214, 0.36);
+  border-radius: 999px;
+  padding: 13px 20px;
+  background: rgba(255, 202, 119, 0.2);
+  color: var(--paper);
+  cursor: pointer;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.22);
+}
+
+.back-button {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.continue-button span,
+.back-button span {
+  font-size: 1.35rem;
+  line-height: 0.6;
+}
+
+.puzzle-panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 6;
+  width: min(440px, calc(100vw - 36px));
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(15, 20, 31, 0.82);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48), 0 0 42px var(--glow);
+  text-align: center;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(18px);
+}
+
+.puzzle-kicker {
+  margin: 0 0 8px;
+  color: #ffe4b6;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.puzzle-label {
+  margin: 0 0 18px;
+  color: var(--ink);
+  font-size: clamp(1.35rem, 4vw, 2rem);
+}
+
+.puzzle-button {
+  border: 1px solid rgba(255, 241, 214, 0.24);
+  border-radius: 999px;
+  padding: 11px 18px;
+  background: rgba(255, 229, 183, 0.14);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.is-hidden {
+  display: none;
+}
+
+@media (max-width: 680px) {
+  .game {
+    min-height: 520px;
+  }
+
+  .audio-toggle {
+    min-width: 96px;
+    padding: 9px 12px;
+    font-size: 0.86rem;
+  }
+
+  .stage {
+    inset: 7vh 0 34vh;
+    padding: 0 16px;
+  }
+
+  .stage[data-speaker="Time Keeper"] {
+    inset: 5vh 0 33vh;
+    justify-content: flex-end;
+    padding-right: 0;
+  }
+
+  .sprite {
+    max-width: min(70vw, 340px);
+    max-height: 56vh;
+  }
+
+  .stage[data-speaker="Time Keeper"] .sprite {
+    max-width: min(84vw, 430px);
+    max-height: 66vh;
+  }
+
+  .dialogue-box {
+    min-height: 250px;
+    padding: 22px;
+    padding-bottom: 76px;
+    border-radius: 24px;
+  }
+
+  .dialogue-text {
+    font-size: 1.14rem;
+  }
+}
+
+@keyframes screen-shake {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+
+  20% {
+    transform: translate(-6px, 3px);
+  }
+
+  40% {
+    transform: translate(5px, -4px);
+  }
+
+  60% {
+    transform: translate(-3px, -2px);
+  }
+
+  80% {
+    transform: translate(4px, 3px);
+  }
+}

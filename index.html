@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>When the Sky Closed</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game" aria-label="Narrative ARG experience">
+      <div class="background-layer background-layer--back" aria-hidden="true"></div>
+      <div class="background-layer background-layer--front" aria-hidden="true"></div>
+      <div class="atmosphere" aria-hidden="true"></div>
+      <div class="effect-overlay" aria-hidden="true"></div>
+
+      <button class="audio-toggle" id="audioToggle" type="button" aria-pressed="false">
+        Sound Off
+      </button>
+
+      <section class="stage" aria-live="polite">
+        <img class="sprite" id="sprite" alt="" />
+      </section>
+
+      <section class="puzzle-panel is-hidden" id="puzzlePanel" aria-live="polite">
+        <p class="puzzle-kicker" id="puzzleKicker">Puzzle Placeholder</p>
+        <p class="puzzle-label" id="puzzleLabel">Puzzle Placeholder</p>
+        <button class="puzzle-button" id="completePuzzle" type="button">Complete Puzzle</button>
+      </section>
+
+      <section class="dialogue-box" id="dialogueBox" aria-live="polite">
+        <p class="speaker" id="speaker">Time Keeper</p>
+        <p class="dialogue-text" id="dialogueText"></p>
+        <div class="dialogue-actions">
+          <button class="back-button" id="backButton" type="button">
+            <span aria-hidden="true">‹</span>
+            Back
+          </button>
+          <button class="continue-button" id="continueButton" type="button">
+            Continue
+            <span aria-hidden="true">›</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
