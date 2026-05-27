@@ -8,7 +8,7 @@
   </head>
   <body>
     <main class="game" aria-label="Narrative ARG experience">
-      <div class="background-layer background-layer--back" aria-hidden="true"></div>
+      <div class="background-layer background-layer--back" id="background" aria-hidden="true"></div>
       <div class="background-layer background-layer--front" aria-hidden="true"></div>
       <div class="atmosphere" aria-hidden="true"></div>
       <div class="effect-overlay" aria-hidden="true"></div>
@@ -21,10 +21,168 @@
         <img class="sprite" id="sprite" alt="" />
       </section>
 
+      <section class="candella-node is-hidden" id="candellaNode" aria-label="Candella parade fragments">
+        <div class="candella-characters" aria-hidden="true">
+          <img class="candella-frog" id="candellaFrog" src="assets/sprites/frog-smile.png" alt="" />
+          <img class="candella-timekeeper" id="candellaTimeKeeper" src="assets/sprites/timekeeper sprite (1)-jukebox-bg-removed.png" alt="" />
+        </div>
+
+        <div class="fragment-field" id="fragmentField">
+          <button class="fragment fragment--gate" type="button" data-fragment="candy_gate">Candy Gate</button>
+          <button class="fragment fragment--bridge" type="button" data-fragment="confetti_bridge">Confetti Bridge</button>
+          <button class="fragment fragment--cart" type="button" data-fragment="laughter_cart">Laughter Cart</button>
+          <button class="fragment fragment--arch" type="button" data-fragment="final_arch">Final Arch</button>
+          <button class="fragment fragment--wagon" type="button" data-fragment="broken_wagon">Broken Music Wagon</button>
+        </div>
+
+        <aside class="memory-notes" id="memoryNotes" aria-live="polite">
+          <p class="memory-title">Frog's Notes</p>
+          <ul id="memoryList"></ul>
+        </aside>
+
+        <form class="stability-panel is-hidden" id="stabilityPanel">
+          <p class="stability-title">Stability Selection</p>
+          <p class="stability-copy">After the parade has shifted, which three fragments still feel like themselves?</p>
+          <label><input type="checkbox" value="candy_gate" /> Candy Gate</label>
+          <label><input type="checkbox" value="confetti_bridge" /> Confetti Bridge</label>
+          <label><input type="checkbox" value="laughter_cart" /> Laughter Cart</label>
+          <label><input type="checkbox" value="final_arch" /> Final Arch</label>
+          <label><input type="checkbox" value="broken_wagon" /> Broken Music Wagon</label>
+          <button class="stability-submit" type="submit">Hold These Three</button>
+        </form>
+      </section>
+
+      <section class="verdant-node is-hidden" id="verdantNode" aria-label="Verdant Rail archive document">
+        <div class="verdant-shell">
+          <div class="verdant-header">
+            <p class="verdant-kicker">Verdant Rail Archive</p>
+            <p class="verdant-status" id="verdantStatus">Document state: unresolved</p>
+          </div>
+
+          <div class="section-tabs" id="sectionTabs">
+            <button type="button" data-section="overview">System Overview</button>
+            <button type="button" data-section="anomaly">Anomaly Log</button>
+            <button type="button" data-section="stationIndex">Station Index</button>
+            <button type="button" data-section="transit">Transit Behavior Report</button>
+          </div>
+
+          <article class="archive-page" id="archivePage">
+            <p class="archive-title">Select a section.</p>
+            <p class="archive-body">The rail archive is waiting for a reading path.</p>
+          </article>
+
+          <aside class="sequence-notes">
+            <p class="memory-title">Frog's Sequence Notes</p>
+            <ol id="sequenceList"></ol>
+          </aside>
+
+          <form class="route-panel is-hidden" id="routePanel">
+            <p class="stability-title">Route Confirmation</p>
+            <p class="stability-copy">Enter the section order that makes the document cohere.</p>
+            <input id="routeInput" type="text" autocomplete="off" placeholder="Example: overview, anomaly, index, transit" />
+            <button class="stability-submit" type="submit">Confirm Reading Path</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="glass-node is-hidden" id="glassNode" aria-label="Glasshollow echo archive">
+        <div class="glass-panel">
+          <p class="verdant-kicker">Glass Archive Room</p>
+          <p class="verdant-status" id="glassStatus">Echo synchronization is nominal.</p>
+          <div class="shard-field">
+            <button type="button" class="shard" data-shard="room">Room Shard</button>
+            <button type="button" class="shard" data-shard="safe">Safety Shard</button>
+            <button type="button" class="shard" data-shard="memory">Memory Shard</button>
+            <button type="button" class="shard" data-shard="frog">Frog Shard</button>
+          </div>
+          <div class="echo-log" id="echoLog" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="rain-node is-hidden" id="rainNode" aria-label="Rain Market meaning exchange">
+        <div class="rain-panel">
+          <p class="verdant-kicker">The Rain Market</p>
+          <p class="verdant-status" id="rainStatus">Drift level: 0</p>
+          <div class="stall-grid" id="stallGrid">
+            <button type="button" class="stall" data-item="beginning">A warm beginning</button>
+            <button type="button" class="stall" data-item="sound">A sound you almost remember</button>
+            <button type="button" class="stall" data-item="path">A path that may not exist</button>
+            <button type="button" class="stall" data-item="certainty">A moment of certainty</button>
+            <button type="button" class="stall" data-item="repetition">A broken repetition</button>
+            <button type="button" class="stall" data-item="shelter">A borrowed shelter</button>
+          </div>
+          <article class="market-card" id="marketCard">Choose a stall. Meanings are priced after inspection.</article>
+        </div>
+      </section>
+
+      <section class="gate-node is-hidden" id="gateNode" aria-label="Final Gate alignment failure">
+        <div class="gate-shell">
+          <div class="gate-visual" aria-hidden="true">
+            <div class="gate-ring gate-ring--outer"></div>
+            <div class="gate-ring gate-ring--middle"></div>
+            <div class="gate-ring gate-ring--inner"></div>
+            <div class="gate-core"></div>
+          </div>
+
+          <form class="gate-controls" id="gateForm">
+            <p class="verdant-kicker">Collapsed Configuration</p>
+            <p class="verdant-status" id="gateStatus">Alignment state: unstable</p>
+
+            <label>
+              Candella Lock
+              <select name="candella">
+                <option value="">Choose a failure state</option>
+                <option value="all_stable">All fragments stable</option>
+                <option value="stable_inside_drift">Stable set inside drift</option>
+                <option value="all_unstable">All fragments unstable</option>
+              </select>
+            </label>
+
+            <label>
+              Rail Lock
+              <select name="rail">
+                <option value="">Choose a failure state</option>
+                <option value="valid_only">Valid route only</option>
+                <option value="wrong_station">Valid route plus wrong station</option>
+                <option value="erased">Route erased</option>
+              </select>
+            </label>
+
+            <label>
+              Echo Lock
+              <select name="echo">
+                <option value="">Choose a failure state</option>
+                <option value="consistent">Consistent echo</option>
+                <option value="accepted_contradiction">Contradiction accepted</option>
+                <option value="silenced">Echo silenced</option>
+              </select>
+            </label>
+
+            <label>
+              Memory Lock
+              <select name="memory">
+                <option value="">Choose a failure state</option>
+                <option value="fixed">Meaning fixed</option>
+                <option value="drifting">Meaning allowed to drift</option>
+                <option value="inverted">Meaning inverted</option>
+              </select>
+            </label>
+
+            <button class="stability-submit" type="submit">Submit Collapse</button>
+          </form>
+
+          <div class="gate-bleed" id="gateBleed" aria-hidden="true">
+            <span>Candy Gate</span>
+            <span>System Overview</span>
+            <span>Frog (echo)</span>
+            <span>A broken repetition</span>
+          </div>
+        </div>
+      </section>
+
       <section class="puzzle-panel is-hidden" id="puzzlePanel" aria-live="polite">
         <p class="puzzle-kicker" id="puzzleKicker">Puzzle Placeholder</p>
         <p class="puzzle-label" id="puzzleLabel">Puzzle Placeholder</p>
-        <button class="puzzle-button" id="completePuzzle" type="button">Complete Puzzle</button>
       </section>
 
       <section class="dialogue-box" id="dialogueBox" aria-live="polite">
