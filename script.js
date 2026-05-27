@@ -402,7 +402,8 @@ const state = {
   frontBackgroundVisible: false,
   muted: true,
   activeMusic: "",
-  spriteSwapId: 0
+  spriteSwapId: 0,
+  completed: false
 };
 
 const candellaState = {
@@ -1004,9 +1005,9 @@ function handleAdvanceInput() {
   prepareAudioForInteraction();
 
   if (currentScene().type === "puzzle") {
-    // Puzzle placeholder logic removed. 
-    // Actual puzzles require state completion (e.g. candellaState.completed).
-    advanceDialogue();
+    if (state.completed) {
+      advanceDialogue();
+    }
   } else {
     advanceDialogue();
   }
@@ -1397,6 +1398,12 @@ function updateVerdantProgress(sectionId) {
 
   if (sectionId === expected) {
     verdantState.validPathProgress += 1;
+    if (verdantState.confirmedOnce && verdantState.validPathProgress === 4) {
+      verdantState.completed = true;
+      elements.routePanel.classList.add("is-hidden");
+      elements.continueButton.classList.remove("is-hidden");
+      setDialogueText("Frog", "So the answer wasn't inside the document. It was the way through it.");
+    }
     return;
   }
 
@@ -1824,11 +1831,68 @@ function showPuzzleScene() {
   hideRainPuzzle();
   hideFinalGatePuzzle();
   clearEffects();
-  elements.dialogueBox.classList.add("is-hidden");
-  elements.sprite.classList.remove("is-visible");
-  elements.puzzleKicker.textContent = "Puzzle Placeholder";
-  elements.puzzleLabel.textContent = currentScene().prompt;
-  elements.puzzlePanel.classList.remove("is-hidden");
+
+  const scene = currentScene();
+
+  if (scene.title === "The Observatory") {
+    state.completed = false;
+    elements.dialogueBox.classList.remove("is-hidden");
+    elements.continueButton.classList.add("is-hidden");
+    elements.sprite.classList.add("is-visible");
+    showSprite({
+      speaker: "Frog",
+      sprite: S.frogThink,
+      position: "left"
+    });
+    setDialogueText("Frog", "The stars... they're not where they're supposed to be. I think I can move them if I click the right patterns in the sky.");
+
+    elements.puzzleKicker.textContent = "Observatory Calibration";
+    elements.puzzleLabel.innerHTML = `
+      <div class="observatory-puzzle">
+        <p>Align the three missing anchors.</p>
+        <div class="constellation-grid">
+          <button type="button" class="star-node" data-node="1">Anchor Alpha</button>
+          <button type="button" class="star-node" data-node="2">Anchor Beta</button>
+          <button type="button" class="star-node" data-node="3">Anchor Gamma</button>
+        </div>
+      </div>
+    `;
+    elements.puzzlePanel.classList.remove("is-hidden");
+
+    const nodes = elements.puzzlePanel.querySelectorAll(".star-node");
+    let activeNodes = new Set();
+
+    nodes.forEach((node) => {
+      node.addEventListener("click", () => {
+        const id = node.dataset.node;
+        prepareAudioForInteraction();
+        playFragmentTone("certainty");
+
+        if (activeNodes.has(id)) {
+          activeNodes.delete(id);
+          node.classList.remove("is-active");
+        } else {
+          activeNodes.add(id);
+          node.classList.add("is-active");
+        }
+
+        if (activeNodes.size === 3) {
+          state.completed = true;
+          elements.continueButton.classList.remove("is-hidden");
+          setDialogueText("Frog", "There. The sky just... clicked into place.");
+        } else {
+          state.completed = false;
+          elements.continueButton.classList.add("is-hidden");
+        }
+      });
+    });
+  } else {
+    elements.dialogueBox.classList.add("is-hidden");
+    elements.sprite.classList.remove("is-visible");
+    elements.puzzleKicker.textContent = "Puzzle Placeholder";
+    elements.puzzleLabel.textContent = scene.prompt;
+    elements.puzzlePanel.classList.remove("is-hidden");
+  }
 }
 
 function loadScene() {
