@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>When the Sky Closed</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20260527-1" />
   </head>
   <body>
     <main class="game" aria-label="Narrative ARG experience">
@@ -44,7 +44,7 @@
 
         <aside class="memory-notes" id="memoryNotes" aria-live="polite">
           <p class="memory-title">Frog's Notes</p>
-          <p class="node-guidance">Revisit every fragment. The useful clue is what keeps its role after it changes.</p>
+          <p class="node-guidance">Goal: gather Frog Notes, then choose exactly three fragments whose role stayed the same.</p>
           <ul id="memoryList"></ul>
         </aside>
 
@@ -65,7 +65,7 @@
           <div class="verdant-header">
             <p class="verdant-kicker">Verdant Rail Archive</p>
             <p class="verdant-status" id="verdantStatus">Document state: unresolved</p>
-            <p class="node-guidance">Read sections as a path. Wrong paths leave useful scars.</p>
+            <p class="node-guidance">Goal: find the reading path. The correct route is not the tab order; wrong reads reveal dependencies.</p>
           </div>
 
           <div class="section-tabs" id="sectionTabs">
@@ -87,8 +87,8 @@
 
           <form class="route-panel is-hidden" id="routePanel">
             <p class="stability-title">Route Confirmation</p>
-            <p class="stability-copy">Enter the section order that makes the document cohere.</p>
-            <input id="routeInput" type="text" autocomplete="off" placeholder="Use section names, in the order you proved" />
+            <p class="stability-copy">Enter the non-tab section order that makes the document cohere.</p>
+            <input id="routeInput" type="text" autocomplete="off" placeholder="Use section names, in the order that stabilized them" />
             <button class="stability-submit" type="submit">Confirm Reading Path</button>
           </form>
         </div>
@@ -97,8 +97,8 @@
       <section class="glass-node is-hidden" id="glassNode" aria-label="Glasshollow echo archive">
         <div class="glass-panel">
           <p class="verdant-kicker">Glass Archive Room</p>
-          <p class="verdant-status" id="glassStatus">Echo synchronization is nominal.</p>
-          <p class="node-guidance">Touch one shard, then wait for its echo. Collided echoes do not count.</p>
+          <p class="verdant-status" id="glassStatus">Mirror accord unresolved.</p>
+          <p class="node-guidance">Goal: cycle each shard to the reading that lets contradiction survive, then hold the reflection.</p>
           <div class="shard-field">
             <button type="button" class="shard" data-shard="room">Room Shard</button>
             <button type="button" class="shard" data-shard="safe">Safety Shard</button>
@@ -106,6 +106,7 @@
             <button type="button" class="shard" data-shard="frog">Frog Shard</button>
           </div>
           <div class="echo-log" id="echoLog" aria-live="polite"></div>
+          <button class="stability-submit mirror-submit" id="mirrorSubmit" type="button">Hold Reflection</button>
         </div>
       </section>
 
@@ -113,7 +114,7 @@
         <div class="rain-panel">
           <p class="verdant-kicker">The Rain Market</p>
           <p class="verdant-status" id="rainStatus">Drift level: 0</p>
-          <p class="node-guidance">Inspect a stall, then choose whether to keep or trade its meaning.</p>
+          <p class="node-guidance">Goal: test which feelings survive both choices. Inspect, then keep or trade the meaning.</p>
           <div class="stall-grid" id="stallGrid">
             <button type="button" class="stall" data-item="beginning">A warm beginning</button>
             <button type="button" class="stall" data-item="sound">A sound you almost remember</button>
@@ -127,6 +128,21 @@
             <button type="button" id="keepMeaning">Keep Meaning</button>
             <button type="button" id="tradeMeaning">Trade Meaning</button>
           </div>
+          <aside class="market-ledger">
+            <p class="memory-title">Trade Ledger</p>
+            <ul id="marketLedger"></ul>
+          </aside>
+          <form class="meaning-panel is-hidden" id="meaningPanel">
+            <p class="stability-title">Meaning Selection</p>
+            <p class="stability-copy">After enough exchanges, which three concepts kept the same emotional role?</p>
+            <label><input type="checkbox" value="beginning" /> A warm beginning</label>
+            <label><input type="checkbox" value="sound" /> A sound you almost remember</label>
+            <label><input type="checkbox" value="path" /> A path that may not exist</label>
+            <label><input type="checkbox" value="certainty" /> A moment of certainty</label>
+            <label><input type="checkbox" value="repetition" /> A broken repetition</label>
+            <label><input type="checkbox" value="shelter" /> A borrowed shelter</label>
+            <button class="stability-submit" type="submit">Name the Survivors</button>
+          </form>
         </div>
       </section>
 
@@ -142,7 +158,7 @@
           <form class="gate-controls" id="gateForm">
             <p class="verdant-kicker">Collapsed Configuration</p>
             <p class="verdant-status" id="gateStatus">Alignment state: unstable</p>
-            <p class="node-guidance">The gate rejects perfect consistency. Give it a contradiction that still holds together.</p>
+            <p class="node-guidance">Set one lock from each world lesson, then write the four surviving words.</p>
 
             <label>
               Candella Lock
@@ -165,7 +181,7 @@
             </label>
 
             <label>
-              Echo Lock
+              Mirror Lock
               <select name="echo">
                 <option value="">Choose a failure state</option>
                 <option value="consistent">Force one reflection</option>
@@ -195,9 +211,72 @@
           <div class="gate-bleed" id="gateBleed" aria-hidden="true">
             <span>Candy Gate</span>
             <span>System Overview</span>
-            <span>Frog (echo)</span>
+            <span>Mirror Accord</span>
             <span>A broken repetition</span>
           </div>
+        </div>
+      </section>
+
+      <section class="archive-node is-hidden" id="archiveNode" aria-label="Researcher file archive">
+        <div class="archive-shell">
+          <div class="archive-header">
+            <p class="verdant-kicker">HERTA Contamination Index</p>
+            <p class="verdant-status" id="archiveStatus">Observer files unresolved.</p>
+            <p class="node-guidance">Open researcher remnants, identify how each observer failed, then write the containment thesis.</p>
+          </div>
+          <div class="file-tabs" id="fileTabs"></div>
+          <article class="file-page" id="filePage">
+            <p class="archive-title">Select a contaminated record.</p>
+            <p class="archive-body">The archive does not have an original version. It has surviving disagreements.</p>
+          </article>
+          <aside class="file-notes">
+            <p class="memory-title">Failure Map</p>
+            <ul id="fileNotes"></ul>
+          </aside>
+          <form class="containment-panel" id="archiveForm">
+            <p class="stability-title">Containment Thesis</p>
+            <p class="stability-copy">What did the researchers misunderstand?</p>
+            <input id="archiveThesis" type="text" autocomplete="off" placeholder="Use the words the records keep circling" />
+            <button class="stability-submit" type="submit">Submit Thesis</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="puzzle-panel is-hidden" id="spectrogramPuzzlePanel" aria-label="Audio spectrogram puzzle">
+        <div class="verdant-header">
+          <p class="puzzle-kicker">Encoded Audio Log</p>
+          <p class="node-guidance">The signal contains a vertical visual pattern. Decipher the link to the external archive.</p>
+        </div>
+        <form class="route-panel" id="spectrogramForm">
+          <p class="stability-copy">Decoded Output (URL):</p>
+          <input id="spectrogramInput" type="text" autocomplete="off" placeholder="https://drive.google.com/..." />
+          <button class="stability-submit" type="submit">Submit Decoded Link</button>
+        </form>
+      </section>
+
+      <section class="seal-node is-hidden" id="sealNode" aria-label="Final seal containment">
+        <div class="seal-shell">
+          <p class="verdant-kicker">Final Seal</p>
+          <p class="verdant-status" id="sealStatus">Containment unresolved.</p>
+          <p class="node-guidance">Choose the vessel, enter the final refusal, then activate the seal yourself.</p>
+          <form class="seal-form" id="sealForm">
+            <label>
+              Vessel
+              <select name="vessel">
+                <option value="">Choose a vessel</option>
+                <option value="timekeeper">The Time Keeper</option>
+                <option value="researchers">The Researcher Fragments</option>
+                <option value="frog">Frog</option>
+                <option value="none">No vessel</option>
+              </select>
+            </label>
+            <label>
+              The final refusal:
+              <input id="phrase" name="phrase" type="text" autocomplete="off" placeholder="Enter the assembled phrase..." />
+            </label>
+            <button class="stability-submit" type="submit">Prepare Seal</button>
+          </form>
+          <button class="seal-button is-hidden" id="activateSeal" type="button">Activate Final Seal</button>
         </div>
       </section>
 
@@ -222,6 +301,9 @@
             <span aria-hidden="true">‹</span>
             Back
           </button>
+          <button class="reset-button is-hidden" id="resetButton" type="button">
+            Reset Puzzle
+          </button>
           <button class="continue-button" id="continueButton" type="button">
             Continue
             <span aria-hidden="true">›</span>
@@ -230,6 +312,6 @@
       </section>
     </main>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=20260527-1"></script>
   </body>
 </html>

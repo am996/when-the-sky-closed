@@ -1,0 +1,22 @@
+FAILED TRANSCRIPTION // IDENTITY EROSION
+
+COPY 1:
+I am Dr. Halen Reeve.
+
+COPY 2:
+I am Dr. Halen.
+
+COPY 3:
+I am Dr.
+
+COPY 4:
+I am.
+
+COPY 5:
+We are.
+
+COPY 6:
+We.
+
+COPY 7:
+[alignment accepts pronoun loss as reduced contradiction]

@@ -185,6 +185,10 @@ button {
   animation: glass-desync 4s steps(1, end) infinite;
 }
 
+.game.is-spectrogram .atmosphere {
+  filter: hue-rotate(180deg) saturate(1.5); /* Visual distortion for spectrogram */
+}
+
 .game.is-rain .atmosphere {
   background:
     repeating-linear-gradient(100deg, rgba(165, 218, 255, 0.08) 0 2px, transparent 2px 13px),
@@ -225,6 +229,10 @@ button {
 .audio-toggle:focus-visible,
 .continue-button:hover,
 .continue-button:focus-visible,
+.back-button:hover,
+.back-button:focus-visible,
+.reset-button:hover,
+.reset-button:focus-visible,
 .puzzle-button:hover,
 .puzzle-button:focus-visible {
   border-color: rgba(255, 230, 184, 0.48);
@@ -439,7 +447,8 @@ button {
 }
 
 .continue-button,
-.back-button {
+.back-button,
+.reset-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -456,12 +465,15 @@ button {
   text-transform: uppercase;
 }
 
-.back-button {
-  background: rgba(255, 255, 255, 0.08);
+.reset-button {
+  background: linear-gradient(180deg, #4b1f1b, #1b0d0b);
+  color: #ffd7c2;
+  border-color: rgba(216, 82, 62, 0.72);
 }
 
 .continue-button span,
-.back-button span {
+.back-button span,
+.reset-button span {
   font-size: 1.2rem;
   line-height: 0.6;
 }
@@ -902,6 +914,7 @@ button {
 .glass-panel,
 .rain-panel {
   width: min(960px, calc(100vw - 32px));
+  max-height: calc(100vh - 250px);
   margin-bottom: 150px;
   padding: clamp(18px, 3vw, 28px);
   border: 1px solid rgba(222, 244, 255, 0.24);
@@ -910,6 +923,7 @@ button {
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34), 0 0 36px rgba(147, 218, 255, 0.14);
   pointer-events: auto;
   backdrop-filter: blur(16px);
+  overflow: auto;
 }
 
 .shard-field,
@@ -950,6 +964,12 @@ button {
   background: rgba(255, 215, 130, 0.14);
 }
 
+.shard.is-active {
+  border-color: rgba(176, 225, 255, 0.72);
+  background: rgba(126, 190, 255, 0.16);
+  box-shadow: 0 0 22px rgba(118, 197, 255, 0.18);
+}
+
 .echo-log {
   display: grid;
   gap: 10px;
@@ -968,6 +988,10 @@ button {
   border-left-color: rgba(255, 142, 184, 0.62);
   color: #ffdce9;
   transform: translateX(10px);
+}
+
+.mirror-submit {
+  margin-top: 14px;
 }
 
 .market-card {
@@ -998,6 +1022,38 @@ button {
   cursor: pointer;
 }
 
+.market-ledger,
+.meaning-panel {
+  margin-top: 14px;
+  border: 1px solid rgba(255, 230, 181, 0.22);
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.market-ledger ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #fff4df;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.market-ledger li {
+  margin: 5px 0;
+}
+
+.meaning-panel label {
+  display: block;
+  margin: 9px 0;
+  color: #fff4e3;
+}
+
+.meaning-panel input {
+  margin-right: 9px;
+  accent-color: #ffd782;
+}
+
 .gate-node {
   position: absolute;
   inset: 0;
@@ -1018,6 +1074,160 @@ button {
   gap: 24px;
   align-items: center;
   pointer-events: auto;
+}
+
+.archive-node,
+.seal-node {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 4vw, 44px);
+  pointer-events: none;
+}
+
+.archive-shell {
+  width: min(1080px, calc(100vw - 32px));
+  max-height: calc(100vh - 245px);
+  margin-bottom: 135px;
+  display: grid;
+  grid-template-columns: 240px 1fr 300px;
+  grid-template-rows: auto 1fr auto;
+  gap: 14px;
+  pointer-events: auto;
+  overflow: auto;
+}
+
+.archive-header,
+.file-tabs,
+.file-page,
+.file-notes,
+.containment-panel,
+.seal-shell {
+  border: 1px solid rgba(206, 229, 255, 0.24);
+  border-radius: 18px;
+  background: rgba(9, 12, 22, 0.76);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36), 0 0 28px rgba(120, 172, 255, 0.13);
+  backdrop-filter: blur(16px);
+}
+
+.archive-header {
+  grid-column: 1 / -1;
+  padding: 14px 18px;
+}
+
+.file-tabs {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 14px;
+}
+
+.file-tabs button {
+  border: 1px solid rgba(206, 229, 255, 0.25);
+  border-radius: 12px;
+  padding: 13px 14px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #f2f7ff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.file-tabs button.is-active {
+  border-color: rgba(160, 201, 255, 0.72);
+  background: rgba(111, 159, 255, 0.16);
+}
+
+.file-page {
+  min-height: 330px;
+  padding: clamp(18px, 3vw, 30px);
+}
+
+.file-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: #b8d7ff;
+  overflow-wrap: anywhere;
+}
+
+.file-notes,
+.containment-panel {
+  padding: 14px 18px;
+}
+
+.file-notes ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: #fff4df;
+  line-height: 1.35;
+}
+
+.containment-panel {
+  grid-column: 2 / -1;
+}
+
+.containment-panel input,
+.seal-form input,
+.seal-form select {
+  width: 100%;
+  margin: 10px 0 12px;
+  border: 1px solid rgba(206, 229, 255, 0.25);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.09);
+  color: #fff9e9;
+}
+
+.seal-shell {
+  width: min(620px, calc(100vw - 32px));
+  margin-bottom: 140px;
+  padding: clamp(20px, 4vw, 34px);
+  pointer-events: auto;
+}
+
+.seal-form label {
+  display: block;
+  margin: 14px 0;
+  color: #fff4e3;
+}
+
+.seal-button {
+  width: 100%;
+  margin-top: 14px;
+  border: 2px solid rgba(244, 220, 164, 0.72);
+  border-radius: 0;
+  padding: 15px 18px;
+  background: linear-gradient(180deg, #f4d58c, #7a5427);
+  color: #1c120c;
+  cursor: pointer;
+  clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 14px 100%, 0 50%);
+  font-family: Impact, "Arial Black", system-ui, sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.game.is-seal .sprite[alt="Frog"] {
+  filter: hue-rotate(20deg) saturate(0.8) brightness(0.9) contrast(1.1); /* Subtle corruption */
+}
+
+.game.is-still .atmosphere,
+.game.is-still .effect-overlay {
+  animation: none;
+  opacity: 0.06;
+}
+
+.sprite[data-role="staff"] {
+  max-width: min(30vw, 280px);
+  max-height: 60vh;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3)) brightness(1.5) hue-rotate(90deg);
+  animation: staff-flicker 0.8s steps(1, end) infinite;
+  transform: translateY(10px) scale(0.95);
+}
+
+.sprite[data-role="staff"].is-visible {
+  transform: translateY(0) scale(1);
 }
 
 .gate-visual {
@@ -1276,6 +1486,20 @@ button {
     margin-bottom: 230px;
   }
 
+  .archive-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    margin-bottom: 230px;
+  }
+
+  .containment-panel {
+    grid-column: 1;
+  }
+
+  .seal-shell {
+    margin-bottom: 230px;
+  }
+
   .gate-visual {
     min-height: 220px;
   }
@@ -1408,5 +1632,20 @@ button {
 
   80% {
     transform: translate(4px, 3px);
+  }
+}
+
+/* NEW: Staff flicker animation */
+@keyframes staff-flicker {
+  0%, 100% {
+    opacity: 0.7;
+    filter: brightness(1.5) hue-rotate(90deg);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.8) hue-rotate(120deg) drop-shadow(0 0 15px rgba(100, 255, 100, 0.5));
+  }
+  25%, 75% {
+    opacity: 0.5;
   }
 }

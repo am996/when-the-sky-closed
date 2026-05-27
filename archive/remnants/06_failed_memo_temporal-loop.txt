@@ -1,0 +1,16 @@
+FAILED MEMO // TEMPORAL LOOPING
+
+MEMO:
+Staff should avoid independent conclusions.
+
+MEMO:
+Staff should avoid independent conclusions.
+
+MEMO:
+Staff should avoid independent conclusions, except this sentence remembers being written.
+
+MEMO:
+This is the first memo.
+
+MEMO:
+This is the first memo after the last one.

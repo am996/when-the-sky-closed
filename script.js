@@ -18,8 +18,9 @@ const assets = {
     frog: "assets/sprites/frog-smile.png",
     frogThink: "assets/sprites/frog-think-.png",
     frogCry: "assets/sprites/frog-cry.png",
-    timeKeeper: "assets/sprites/timekeeper sprite (1)-jukebox-bg-removed.png",
-    timeKeeperAlt: "assets/sprites/timekeeper sprite (2)-jukebox-bg-removed.png"
+    timeKeeper: "assets/sprites/timekeeper sprite (1)-jukebox-bg-removed.png", // Original TK
+    timeKeeperAlt: "assets/sprites/timekeeper sprite (2)-jukebox-bg-removed.png", // Aligned TK
+    staffFlicker: staffFlickerImage()
   }
 };
 
@@ -27,7 +28,8 @@ const tracks = {
   calm: createAmbientTrack([196, 247, 330], 8),
   warm: createAmbientTrack([220, 277, 349], 8),
   mystery: createAmbientTrack([164, 220, 294], 9),
-  final: createAmbientTrack([110, 147, 196], 10)
+  final: createAmbientTrack([110, 147, 196], 10),
+  spectrogramHint: createAmbientTrack([440, 554, 659], 12) // NEW: Placeholder for spectrogram audio
 };
 
 const S = assets.sprites;
@@ -384,7 +386,7 @@ const scenes = [
     tkReleased("Finally.", "shake"),
     note("FLASH", "flash"),
     note("A strange image cuts through the light.", "corrupt"),
-    note("Audio distortion", "corrupt"),
+    note("Audio distortion", "jumpscare"),
     frog("WAIT-", "cry", "shake"),
     tkReleased("You have completed the alignment.", "corrupt"),
     tkReleased("And now...", "corrupt"),
@@ -394,6 +396,176 @@ const scenes = [
     frog("What did we just do?", "cry", "corrupt"),
     note("Hard cut to black.", "blackout"),
     note("END OF PHASE 1", "blackout")
+  ]),
+
+  dialogueScene("Phase 2 // HERTA Wakes", B.black, tracks.mystery, [
+    note("The HERTA archive opens itself.", "corrupt"),
+    note("RECORD ALERT: No original version detected.", "corrupt"),
+    note("Consensus variance: fatal.", "corrupt"),
+    note("The sky is closing because everyone is looking at the same thing.", "corrupt"),
+    frog("The files are changing without us touching them.", "cry"),
+    tkReleased("Records align when they are ready to stop suffering.", "corrupt"),
+    frog("That sounds merciful.", "think"),
+    tkReleased("It is. Conflict is the weight that breaks the vessel."),
+    frog("I hate that it sounds merciful.", "cry"),
+    tkReleased("Contradiction is pain. Coherence is rest."),
+    frog("No."),
+    frog("Candella didn't survive because it became simple.", "think"),
+    frog("Verdant didn't survive because every report agreed.", "think"),
+    frog("Glasshollow survived by holding two answers.", "think"),
+    frog("And the market... the market only made sense when words were allowed to drift.", "think"),
+    tkReleased("You have learned preservation."),
+    frog("I think I've learned the opposite.", "think")
+  ]),
+
+  researcherArchiveScene(B.black, tracks.mystery),
+
+  // NEW SCENE: Spectrogram Hint - triggered after researcherArchiveScene completion
+  spectrogramPuzzleScene(B.black, tracks.spectrogramHint),
+
+  // NEW SCENE: Researcher Recording from Google Drive - triggered after spectrogramPuzzleScene completion
+  researcherRecordingScene("Researcher Recording", B.black, tracks.mystery, [
+    note("Recording source: External Drive. Playback initiated.", "corrupt"),
+    note("Audio: static, then a calm, exhausted voice.", "corrupt"),
+    rv("We made a mistake.", "corrupt"),
+    pause(),
+    rv("We thought the structure was containing her.", "corrupt"),
+    pause(),
+    rv("It wasn't.", "corrupt"),
+    pause(),
+    rv("It was preserving separation.", "corrupt"),
+    pause(),
+    rv("The contradictions were never flaws.", "corrupt"),
+    pause(),
+    rv("They were barriers.", "corrupt"),
+    pause(),
+    rv("If everything becomes the same... nothing remains itself.", "corrupt"),
+    pause(),
+    rv("We tried to create one final interruption.", "corrupt"),
+    pause(),
+    rv("A sentence simple enough to survive corruption.", "corrupt"),
+    pause(),
+    rv("A thought alignment could not fully erase.", "corrupt"),
+    pause(),
+    rv("Let them remain different.", "corrupt"),
+    pause(),
+    rv("Not a weapon.", "corrupt"),
+    pause(),
+    rv("Not a seal.", "corrupt"),
+    pause(),
+    rv("A refusal. If you reached this recording... then she is already awake. And the boy remembers enough.", "corrupt"),
+    note("Recording ends.", "corrupt")
+  ]),
+
+  dialogueScene("Phase 2 // Observer Collapse", B.finalGate, tracks.final, [
+    note("System: Researcher fragments stabilize.", "corrupt"),
+    note("Their voices become calmer.", "corrupt"),
+    frog("They're getting clearer.", "cry"),
+    frog("Why is that worse? Why does clarity feel like disappearing?", "cry"),
+    tkReleased("Because coherence is approaching."),
+    frog("I know them.", "think"),
+    frog("Not their names. Not exactly.", "think"),
+    frog("But I know the shape of leaving them behind.", "cry"),
+    note("Researcher Fragment: You left before the sky finished closing.", "corrupt"),
+    frog("I think I survived because I broke.", "cry"),
+    frog("My memory didn't align all the way.", "think"),
+    tkReleased("A fractured vessel can contain divided pressure."),
+    frog("You knew.", "think"),
+    tkReleased("I hoped."),
+    frog("You still sound like you're trying to help.", "cry"),
+    tkReleased("I am.")
+  ]),
+
+  dialogueScene("Containment Choice", B.finalGate, tracks.final, [
+    frog("We can't destroy her.", "think"),
+    frog("The researchers tried to understand everything perfectly.", "think"),
+    frog("That only made her stronger.", "cry"),
+    tkReleased("Understanding is alignment."),
+    frog("Then we don't finish understanding.", "think"),
+    frog("We seal what we can.", "think"),
+    frog("Not forever maybe.", "think"),
+    frog("But long enough for things to be separate again.", "think"),
+    tkReleased("You would choose incompletion."),
+    frog("I think incompletion chose me first.", "think"),
+    frog("I'm scared.", "cry"),
+    frog("But I'm not hopeless.", "think"),
+    frog("If I can hold her without making everything agree...", "think"),
+    frog("Then maybe everyone else gets to stay unfinished too.", "think")
+  ]),
+
+  finalSealScene(B.finalGate, tracks.final),
+
+  dialogueScene("The Sky Closed", B.black, tracks.calm, [
+    // NEW: Frog's dialogue when phrase is entered
+    frog("...that phrase.", "think"),
+    pause(),
+    frog("I remember hearing it before.", "think"),
+    pause(),
+    frog("Right before the sky closed.", "think"),
+    pause(), // Long silence
+    frog("They weren't trying to stop her.", "think"),
+    pause(),
+    frog("They were trying to stop everything from becoming the same.", "think"),
+    note("The environment begins stabilizing. A faint shape starts appearing.", "corrupt"),
+    // NEW: Staff appears, flickering
+    {
+      speaker: "Event",
+      sprite: S.staffFlicker, // NEW sprite
+      position: "center",
+      text: "The staff flickers into existence, unstable.",
+      effect: "corrupt"
+    },
+    // NEW: Time Keeper's final appearance
+    tkReleased("You believe difference is mercy.", "corrupt"),
+    pause(),
+    tkReleased("But separation is suffering.", "corrupt"),
+    pause(),
+    tkReleased("You call contradiction survival because you fear stillness.", "corrupt"),
+    note("Frog slowly takes the staff. His sprite begins subtly changing.", "corrupt"),
+    // NEW: Frog's sprite changes (simulated with effect)
+    frog("No.", "cry", "corrupt"), // Adding corrupt effect to frog's sprite
+    pause(),
+    frog("I think...", "cry", "corrupt"),
+    pause(),
+    frog("...I was just afraid to let go.", "cry", "corrupt"),
+    pause(), // Long silence
+    frog("The others never got peace.", "cry", "corrupt"),
+    pause(),
+    frog("Maybe none of us were supposed to.", "cry", "corrupt"),
+    note("The staff stabilizes completely.", "corrupt"),
+    // End of Frog's realization, now manual activation for containment
+    // The rest of the dialogue will be triggered by handleSealActivation
+  ]),
+
+  // This is the final dialogue after containment is activated
+  dialogueScene("The Sky Closed - Final Moments", B.black, tracks.calm, [ // Renamed for clarity
+    note("The mechanisms stop moving."),
+    note("The echoes stop answering."),
+    note("The researcher fragments become quiet."),
+    note("For the first time, the sky is still."),
+    frog("It's quiet.", "think"),
+    frog("I can hear myself forgetting... or maybe I'm just finally fitting in.", "think"),
+    tkReleased("Containment stable."),
+    frog("Containment stable.", "think"),
+    frog("No. That's her sentence.", "think"),
+    frog("You sound far away now.", "think"),
+    tkReleased("So do you."),
+    frog("That's fair.", "think"),
+    pause(),
+    frog("I don't remember the market's name.", "think"),
+    frog("I remember rain, though.", "think"),
+    frog("I remember being less alone.", "think"),
+    note("Frog looks at the horizon."),
+    frog("I thought being incomplete meant I was missing something.", "think"),
+    frog("Maybe it meant there was still room inside me for a different truth.", "think"),
+    pause(),
+    frog("If anyone is still listening... tell them I wasn't brave the whole time.", "think"),
+    frog("Tell them I was scared and did it anyway.", "cry"),
+    pause(),
+    frog("Thanks to you, my friend...", "think"),
+    pause(),
+    frog("...the sky is finally closed at peace.", "think"),
+    note("END", "blackout")
   ])
 ];
 
@@ -445,6 +617,61 @@ const researcherFragments = {
     label: "Researcher Fragment",
     text: "Frog left before the sky finished closing. Frog left before we became one thing. Frog remembers by refusing to remember."
   }
+};
+
+const researcherFiles = {
+  chat: {
+    title: "Internal Chat Log // Delayed Messages",
+    type: "Observer Corruption",
+    href: "archive/remnants/01_chatlog_observer-delay.txt",
+    body: "03:14 MIRA: I am receiving your reply before I send the question.\n03:12 OSSIAN: Do not compare clocks. Compare CONTRADICTION.\n03:19 MIRA: The room contains three doors.\n03:19 ELIAN: The room contains no doors.\n03:19 SERA: LET THEM survive until HERTA marks one as CONSENSUS.\n03:20 SYSTEM: CONSENSUS accepted.\n03:20 MIRA: The room contains one door. I hate that I agree.",
+    failure: "Observer Corruption: future actions became part of the record."
+  },
+  audio: {
+    title: "Audio Transcript // Professional Tone Failure",
+    type: "Emotional Inversion",
+    href: "archive/remnants/02_audio_transcript_emotional-inversion.txt",
+    body: "DR. VALE: The nursery mural is comforting.\nDR. VALE: CORRECTION. The comforting mural is unbearable.\nDR. VALE: We REMAIN here. The screaming stopped after agreement. Everyone considers this an improvement.\nDR. VALE: I am writing that calmly because the record wants calm from me.",
+    failure: "Emotional Inversion: fear and comfort traded emotional roles."
+  },
+  transcription: {
+    title: "Failed Transcription // Symbols Refuse Copy",
+    type: "Identity Erosion",
+    href: "archive/remnants/03_failed_transcription_identity.txt",
+    body: "COPY 1: I am Dr. Halen Reeve.\nCOPY 2: DIFFERENT versions of I.\nCOPY 3: I am Dr.\nCOPY 4: I am.\nCOPY 5: We are.\nCOPY 6: We.\nCOPY 7: [alignment accepts pronoun loss as reduced CONTRADICTION]",
+    failure: "Identity Erosion: the self vanished as the record became cleaner."
+  },
+  comparison: {
+    title: "Observer Comparison // Same Room Report",
+    type: "Consensus Failure",
+    href: "archive/remnants/04_observer_comparison_same-room.txt",
+    body: "Observer A: circular chamber, blue glass, dry air.\nObserver B: square corridor, warm rain, no ceiling.\nObserver C: a field under inward-facing stars.\nAll observers passed stress checks.\nHERTA suggested averaging reports.\nAveraged report: one smooth surface. No exits. No SEPARATE observers distinguishable. CONSENSUS achieved.",
+    failure: "Consensus Failure: perfect agreement destroyed the observers' separateness."
+  },
+  child: {
+    title: "Child Drawing Scan // Inward Stars",
+    type: "Sky Witness",
+    href: "archive/remnants/05_child_scan_inward-stars.txt",
+    body: "Recovered from outside the excavation perimeter.\nDrawing: stars inside the horizon line, all pointing inward. A crowned figure stands where the moon should be. The child wrote: THE SKY IS CLOSING BECAUSE EVERYONE IS LOOKING AT THE SAME THING. WE MUST REMAIN SEPARATE.",
+    failure: "Sky Witness: the sky closing means separation disappearing."
+  },
+  memo: {
+    title: "Failed Memo // Institutional Voice Collapse",
+    type: "Temporal Looping",
+    href: "archive/remnants/06_failed_memo_temporal-loop.txt",
+    body: "MEMO: Staff should avoid independent conclusions.\nMEMO: Staff should avoid independent conclusions.\nMEMO: Staff should avoid independent conclusions, except this sentence remembers being written.\nMEMO: This is the first memo.\nMEMO: This is the first memo after the last one.",
+    failure: "Temporal Looping: repetition became coherent enough to be afraid."
+  }
+};
+
+const researcherArchiveState = {
+  opened: [],
+  completed: false
+};
+
+const finalSealState = {
+  prepared: false,
+  completed: false
 };
 
 const candellaState = {
@@ -561,9 +788,10 @@ const verdantSections = {
   }
 };
 
+const verdantCorrectPath = ["anomaly", "overview", "transit", "stationIndex"];
+
 const glassState = {
   actions: [],
-  echoQueue: [],
   corruptionLevel: 0,
   stablePhrases: ["We are in Glasshollow."],
   shardClicks: {
@@ -572,37 +800,52 @@ const glassState = {
     memory: 0,
     frog: 0
   },
-  awaitingEcho: false,
-  resolvedEchoes: {
+  shardModes: {
     room: 0,
     safe: 0,
     memory: 0,
     frog: 0
   },
-  completed: false,
-  timers: []
+  failedHolds: 0,
+  completed: false
 };
 
 const glassShards = {
   room: {
-    normal: "We are in Glasshollow.",
-    echo: "We are still in Glasshollow. I think.",
-    corrupt: "Glasshollow is remembering us back."
+    label: "Room",
+    correct: 0,
+    readings: [
+      { tag: "Anchor", text: "We are in Glasshollow." },
+      { tag: "Negation", text: "We were never in Glasshollow." },
+      { tag: "Dissolve", text: "Glasshollow is only the memory of a room." }
+    ]
   },
   safe: {
-    normal: "This place is safe.",
-    echo: "This place was never safe.",
-    corrupt: "I don't know what safety means here."
+    label: "Safety",
+    correct: 2,
+    readings: [
+      { tag: "Claim", text: "This place is safe." },
+      { tag: "Reversal", text: "This place was never safe." },
+      { tag: "Accord", text: "This place can frighten us and still hold us." }
+    ]
   },
   memory: {
-    normal: "This memory belongs to me.",
-    echo: "I don't remember saying that.",
-    corrupt: "Maybe I'm reacting before it happens."
+    label: "Memory",
+    correct: 2,
+    readings: [
+      { tag: "Claim", text: "This memory belongs to me." },
+      { tag: "Reversal", text: "This memory belongs to someone else." },
+      { tag: "Accord", text: "This memory can be mine and not mine." }
+    ]
   },
   frog: {
-    normal: "I feel like I've already reacted to this.",
-    echo: "No, I reacted later. Didn't I?",
-    corrupt: "Frog is not matching Frog."
+    label: "Frog",
+    correct: 2,
+    readings: [
+      { tag: "Before", text: "Frog reacted before this happened." },
+      { tag: "After", text: "Frog reacted after this happened." },
+      { tag: "Accord", text: "Frog can remember both directions and remain Frog." }
+    ]
   }
 };
 
@@ -618,6 +861,7 @@ const rainState = {
   tradeHistory: [],
   globalDriftLevel: 0,
   activeItem: "",
+  unlockedFinal: false,
   evidence: {
     path: { keep: 0, trade: 0 },
     certainty: { keep: 0, trade: 0 },
@@ -664,6 +908,7 @@ const elements = {
   dialogueBox: document.querySelector("#dialogueBox"),
   continueButton: document.querySelector("#continueButton"),
   backButton: document.querySelector("#backButton"),
+  resetButton: document.querySelector("#resetButton"),
   puzzlePanel: document.querySelector("#puzzlePanel"),
   puzzleKicker: document.querySelector("#puzzleKicker"),
   puzzleLabel: document.querySelector("#puzzleLabel"),
@@ -688,15 +933,30 @@ const elements = {
   glassStatus: document.querySelector("#glassStatus"),
   echoLog: document.querySelector("#echoLog"),
   shardButtons: document.querySelectorAll(".shard"),
+  mirrorSubmit: document.querySelector("#mirrorSubmit"),
   rainNode: document.querySelector("#rainNode"),
   rainStatus: document.querySelector("#rainStatus"),
   stallButtons: document.querySelectorAll(".stall"),
   marketCard: document.querySelector("#marketCard"),
+  marketLedger: document.querySelector("#marketLedger"),
+  meaningPanel: document.querySelector("#meaningPanel"),
   keepMeaning: document.querySelector("#keepMeaning"),
   tradeMeaning: document.querySelector("#tradeMeaning"),
   gateNode: document.querySelector("#gateNode"),
   gateForm: document.querySelector("#gateForm"),
   gateStatus: document.querySelector("#gateStatus"),
+  archiveNode: document.querySelector("#archiveNode"),
+  fileTabs: document.querySelector("#fileTabs"),
+  filePage: document.querySelector("#filePage"),
+  fileNotes: document.querySelector("#fileNotes"),
+  archiveStatus: document.querySelector("#archiveStatus"),
+  archiveForm: document.querySelector("#archiveForm"),
+  archiveThesis: document.querySelector("#archiveThesis"),
+  sealNode: document.querySelector("#sealNode"), // NEW
+  phraseInput: document.querySelector("#phrase"), // NEW
+  sealStatus: document.querySelector("#sealStatus"),
+  sealForm: document.querySelector("#sealForm"),
+  activateSeal: document.querySelector("#activateSeal"),
   jumpscareOverlay: document.querySelector("#jumpscareOverlay"),
   researcherFragment: document.querySelector("#researcherFragment"),
   researcherLabel: document.querySelector("#researcherLabel"),
@@ -740,6 +1000,24 @@ function finalGatePuzzleScene(background, musicTrack) {
   return { type: "finalGatePuzzle", title: "Final Gate", background, music: musicTrack };
 }
 
+function researcherArchiveScene(background, musicTrack) {
+  return { type: "researcherArchive", title: "HERTA Archive", background, music: musicTrack };
+}
+
+function finalSealScene(background, musicTrack) {
+  return { type: "finalSeal", title: "Final Seal", background, music: musicTrack };
+}
+
+function spectrogramPuzzleScene(background, musicTrack) {
+  return { type: "spectrogramPuzzle", title: "Encoded Signal", background, music: musicTrack };
+}
+
+function researcherRecordingScene(title, background, musicTrack, dialogue) {
+  return { type: "dialogue", title, background, music: musicTrack, dialogue };
+}
+
+
+
 function tk(text, effect) {
   return {
     speaker: "Time Keeper",
@@ -755,6 +1033,16 @@ function tkReleased(text, effect) {
     speaker: "Time Keeper",
     sprite: S.timeKeeperAlt,
     position: "right",
+    text,
+    effect
+  };
+}
+
+function rv(text, effect) {
+  return {
+    speaker: "Researcher Fragment",
+    sprite: "",
+    position: "center",
     text,
     effect
   };
@@ -831,6 +1119,10 @@ function blackImage() {
   return "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect width='16' height='9' fill='%23000000'/%3E%3C/svg%3E";
 }
 
+function staffFlickerImage() {
+  return "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 420'%3E%3Crect width='220' height='420' fill='none'/%3E%3Cg fill='none' stroke='%23f4c76d' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M110 94v250'/%3E%3Cpath d='M76 126c22-34 46-34 68 0'/%3E%3Cpath d='M82 344h56'/%3E%3C/g%3E%3Cg fill='%23fff1b8' opacity='.92'%3E%3Ccircle cx='110' cy='72' r='24'/%3E%3Ccircle cx='110' cy='72' r='46' opacity='.28'/%3E%3C/g%3E%3Cg fill='%23cf3755' opacity='.8'%3E%3Cpath d='M110 20l10 30-10 20-10-20z'/%3E%3Cpath d='M62 76l28 8-22 18z'/%3E%3Cpath d='M158 76l-28 8 22 18z'/%3E%3C/g%3E%3C/svg%3E";
+}
+
 function createAmbientTrack(frequencies, seconds) {
   const sampleRate = 8000;
   const sampleCount = sampleRate * seconds;
@@ -876,6 +1168,14 @@ function writeString(view, offset, value) {
 
 function currentScene() {
   return scenes[state.sceneIndex];
+}
+
+function isPuzzleScene(scene = currentScene()) {
+  return ["puzzle", "candellaPuzzle", "verdantPuzzle", "glassPuzzle", "rainPuzzle", "finalGatePuzzle", "researcherArchive", "finalSeal", "spectrogramPuzzle"].includes(scene.type);
+}
+
+function updateResetButtonVisibility() {
+  elements.resetButton.classList.toggle("is-hidden", !isPuzzleScene());
 }
 
 function setBackground(source) {
@@ -994,6 +1294,10 @@ function clearEffects() {
 function applyEffect(effect) {
   clearEffects();
 
+  if (storyState.phaseTwoActive && Math.random() > 0.8) {
+    elements.game.classList.add("is-corrupt");
+  }
+
   if (!effect) return;
 
   if (effect === "shake") elements.game.classList.add("is-shaking");
@@ -1030,11 +1334,15 @@ function showDialogueLine() {
   const scene = currentScene();
   const line = scene.dialogue[state.lineIndex];
 
+  updateResetButtonVisibility();
   hideCandellaPuzzle();
   hideVerdantPuzzle();
   hideGlassPuzzle();
   hideRainPuzzle();
   hideFinalGatePuzzle();
+  hideResearcherArchive();
+  hideSpectrogramPuzzle(); // NEW
+  hideFinalSeal();
   elements.puzzlePanel.classList.add("is-hidden");
   elements.dialogueBox.classList.remove("is-hidden");
   elements.continueButton.classList.remove("is-hidden");
@@ -1053,9 +1361,14 @@ function showDialogueLine() {
 function showSprite(line) {
   if (line.sprite && elements.sprite.getAttribute("src") === line.sprite) {
     elements.sprite.alt = line.speaker || "";
+    elements.sprite.dataset.role = line.sprite === S.staffFlicker ? "staff" : "";
     elements.sprite.classList.remove("is-preparing");
     elements.sprite.classList.add("is-visible");
     return;
+  }
+
+  if (storyState.phaseTwoActive) {
+    elements.game.classList.add("is-corrupt");
   }
 
   state.spriteSwapId += 1;
@@ -1065,6 +1378,7 @@ function showSprite(line) {
 
   if (!line.sprite) {
     elements.sprite.removeAttribute("src");
+    elements.sprite.removeAttribute("data-role");
     elements.sprite.alt = "";
     elements.sprite.classList.remove("is-preparing");
     return;
@@ -1076,6 +1390,7 @@ function showSprite(line) {
 
     elements.sprite.src = line.sprite;
     elements.sprite.alt = line.speaker || "";
+    elements.sprite.dataset.role = line.sprite === S.staffFlicker ? "staff" : "";
 
     requestAnimationFrame(() => {
       elements.sprite.offsetWidth;
@@ -1111,7 +1426,7 @@ function handleAdvanceInput() {
 function handleBackInput() {
   prepareAudioForInteraction();
 
-  if (["puzzle", "candellaPuzzle", "verdantPuzzle", "glassPuzzle", "rainPuzzle", "finalGatePuzzle"].includes(currentScene().type)) {
+  if (isPuzzleScene()) {
     goToPreviousSceneEnd();
     return;
   }
@@ -1132,6 +1447,14 @@ function goToPreviousSceneEnd() {
   const scene = currentScene();
 
   clearEffects();
+  hideCandellaPuzzle();
+  hideVerdantPuzzle();
+  hideGlassPuzzle();
+  hideRainPuzzle();
+  hideFinalGatePuzzle();
+  hideResearcherArchive();
+  hideSpectrogramPuzzle();
+  hideFinalSeal();
   setBackground(scene.background);
   setMusic(scene.music);
 
@@ -1165,8 +1488,66 @@ function goToPreviousSceneEnd() {
     return;
   }
 
+  if (scene.type === "researcherArchive") {
+    showResearcherArchive();
+    return;
+  }
+
+  if (scene.type === "spectrogramPuzzle") { // NEW
+    showSpectrogramPuzzle();
+    return;
+  }
+
+  if (scene.type === "finalSeal") {
+    showFinalSeal();
+    return;
+  }
+
   state.lineIndex = scene.dialogue.length - 1;
   showDialogueLine();
+}
+
+// NEW ELEMENTS for Spectrogram Puzzle
+elements.spectrogramPuzzlePanel = document.querySelector("#spectrogramPuzzlePanel");
+elements.spectrogramInput = document.querySelector("#spectrogramInput");
+elements.spectrogramSubmit = document.querySelector("#spectrogramSubmit");
+
+// NEW: Show Spectrogram Puzzle
+function showSpectrogramPuzzle() {
+  updateResetButtonVisibility();
+  elements.puzzlePanel.classList.add("is-hidden");
+  elements.stage.classList.remove("is-hidden");
+  elements.spectrogramPuzzlePanel.classList.remove("is-hidden");
+  elements.dialogueBox.classList.remove("is-hidden");
+  elements.continueButton.classList.add("is-hidden"); // Player must solve puzzle
+  elements.game.classList.add("is-spectrogram"); // NEW CSS class for visual distinction
+  showSprite({ speaker: "Frog", sprite: S.frogThink, position: "left" });
+  setDialogueText("Frog", "There's an audio signal looping in the background. If we look at the frequencies... I think there's a pattern.");
+  elements.spectrogramInput.value = ""; // Clear previous input
+  if (elements.spectrogramPuzzlePanel.querySelector(".puzzle-kicker")) {
+    elements.spectrogramPuzzlePanel.querySelector(".puzzle-kicker").textContent = "Encoded Signal Analysis";
+  }
+}
+
+// NEW: Hide Spectrogram Puzzle
+function hideSpectrogramPuzzle() {
+  elements.spectrogramPuzzlePanel.classList.add("is-hidden");
+  elements.game.classList.remove("is-spectrogram");
+}
+
+// NEW: Handle Spectrogram Submit
+function handleSpectrogramSubmit(event) {
+  if (event) event.preventDefault();
+  const decodedLink = elements.spectrogramInput.value.trim();
+  const correctLink = "https://drive.google.com/drive/folders/1lfXAMho3-IccE5l_mpiSult5_WJ-m58o?usp=drive_link";
+
+  if (decodedLink === correctLink) {
+    state.completed = true; // Mark puzzle as completed
+    elements.continueButton.classList.remove("is-hidden");
+    setDialogueText("Frog", "That's it! A hidden archive. This must be where the researchers stored their final thoughts.");
+  } else {
+    setDialogueText("Frog", "That doesn't seem right. The signal is distorted, but the message should be clear once decoded.");
+  }
 }
 
 function revealCurrentVoiceAfterUnmute() {
@@ -1184,6 +1565,7 @@ function showInitialSpriteIfCached() {
 }
 
 function showCandellaPuzzle() {
+  updateResetButtonVisibility();
   elements.puzzlePanel.classList.add("is-hidden");
   elements.stage.classList.add("is-hidden");
   elements.candellaNode.classList.remove("is-hidden");
@@ -1197,7 +1579,7 @@ function showCandellaPuzzle() {
 
   if (candellaState.completed) {
     elements.continueButton.classList.remove("is-hidden");
-    setCandellaDialogue("Frog", storyState.phaseTwoActive ? "My notes changed while I wasn't here. Candy Gate still says start, but it sounds like warning now." : "Candella feels steadier now. Not fixed exactly... steadier.");
+    setCandellaDialogue("Frog", storyState.phaseTwoActive ? "The parade notes look like they were written by someone who already disappeared." : "Candella feels steadier now. Not fixed exactly... steadier.");
     maybeResearcherInterrupt("candella");
     return;
   }
@@ -1214,6 +1596,7 @@ function hideCandellaPuzzle() {
 }
 
 function showVerdantPuzzle() {
+  updateResetButtonVisibility();
   elements.puzzlePanel.classList.add("is-hidden");
   elements.stage.classList.remove("is-hidden");
   elements.verdantNode.classList.remove("is-hidden");
@@ -1230,7 +1613,7 @@ function showVerdantPuzzle() {
   renderVerdantInterface();
 
   if (verdantState.completed) {
-    setDialogueText("Frog", "The route finally reads like one railway instead of four different memories.");
+    setDialogueText("Frog", storyState.phaseTwoActive ? "The railway feels like it's trying to arrive at every station at once. It's too coherent." : "The route finally reads like one railway instead of four different memories.");
     maybeResearcherInterrupt("verdant");
     return;
   }
@@ -1244,6 +1627,7 @@ function hideVerdantPuzzle() {
 }
 
 function showGlassPuzzle() {
+  updateResetButtonVisibility();
   elements.puzzlePanel.classList.add("is-hidden");
   elements.stage.classList.remove("is-hidden");
   elements.glassNode.classList.remove("is-hidden");
@@ -1261,6 +1645,7 @@ function hideGlassPuzzle() {
 }
 
 function showRainPuzzle() {
+  updateResetButtonVisibility();
   elements.puzzlePanel.classList.add("is-hidden");
   elements.stage.classList.remove("is-hidden");
   elements.rainNode.classList.remove("is-hidden");
@@ -1278,6 +1663,7 @@ function hideRainPuzzle() {
 }
 
 function showFinalGatePuzzle() {
+  updateResetButtonVisibility();
   elements.puzzlePanel.classList.add("is-hidden");
   elements.stage.classList.remove("is-hidden");
   elements.gateNode.classList.remove("is-hidden");
@@ -1294,10 +1680,48 @@ function hideFinalGatePuzzle() {
   elements.game.classList.remove("is-gate");
 }
 
+function showResearcherArchive() {
+  updateResetButtonVisibility();
+  elements.puzzlePanel.classList.add("is-hidden");
+  elements.stage.classList.remove("is-hidden");
+  elements.archiveNode.classList.remove("is-hidden");
+  elements.dialogueBox.classList.remove("is-hidden");
+  elements.continueButton.classList.toggle("is-hidden", !researcherArchiveState.completed);
+  elements.game.classList.add("is-archive");
+  showSprite({ speaker: "Frog", sprite: S.frogThink, position: "left" });
+  renderResearcherArchive();
+  setDialogueText("Frog", researcherArchiveState.completed ? "The files don't explain everything. That's why they matter." : "These aren't just records. They're where people failed to stay separate.");
+}
+
+function hideResearcherArchive() {
+  elements.archiveNode.classList.add("is-hidden");
+  elements.game.classList.remove("is-archive");
+}
+
+function showFinalSeal() {
+  updateResetButtonVisibility();
+  elements.puzzlePanel.classList.add("is-hidden");
+  elements.stage.classList.remove("is-hidden");
+  elements.sealNode.classList.remove("is-hidden");
+  elements.dialogueBox.classList.remove("is-hidden");
+  elements.continueButton.classList.toggle("is-hidden", !finalSealState.completed);
+  elements.game.classList.add("is-seal");
+  showSprite({ speaker: "Frog", sprite: finalSealState.prepared ? S.frogThink : S.frogCry, position: "left" });
+  renderFinalSeal();
+  setDialogueText("Frog", finalSealState.completed ? "It's quiet now." : "I don't want this. But I think I understand why it has to be me.");
+}
+
+function hideFinalSeal() {
+  elements.sealNode.classList.add("is-hidden");
+  elements.game.classList.remove("is-seal");
+}
+
 function setDialogueText(speaker, text) {
   elements.speaker.textContent = speaker;
   elements.speakerTitle.textContent = speakerTitleFor(speaker);
   setDialoguePortraitForSpeaker(speaker);
+
+  if (storyState.phaseTwoActive && Math.random() > 0.9) elements.game.classList.add("is-shaking");
   elements.dialogueText.textContent = text;
   playVoice({ speaker, text, narration: false });
 }
@@ -1381,6 +1805,150 @@ function maybeResearcherInterrupt(trigger) {
   showResearcherFragment(fragmentKey);
 }
 
+function renderResearcherArchive(activeFile = "") {
+  elements.fileTabs.innerHTML = "";
+
+  Object.entries(researcherFiles).forEach(([fileId, file]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = file.type;
+    button.classList.toggle("is-active", activeFile === fileId);
+    button.addEventListener("click", () => openResearcherFile(fileId));
+    elements.fileTabs.append(button);
+  });
+
+  elements.archiveStatus.textContent = `Observer files opened: ${researcherArchiveState.opened.length}/${Object.keys(researcherFiles).length}`;
+  renderResearcherNotes();
+}
+
+function openResearcherFile(fileId) {
+  const file = researcherFiles[fileId];
+
+  if (!file) return;
+
+  prepareAudioForInteraction();
+  playFragmentTone("memory");
+
+  if (!researcherArchiveState.opened.includes(fileId)) {
+    researcherArchiveState.opened.push(fileId);
+  }
+
+  elements.filePage.innerHTML = "";
+
+  const title = document.createElement("p");
+  title.className = "archive-title";
+  title.textContent = file.title;
+
+  const body = document.createElement("p");
+  body.className = "archive-body";
+  body.textContent = file.body;
+
+  const link = document.createElement("a");
+  link.className = "file-link";
+  link.href = file.href;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.textContent = `Open remnant file: ${file.href}`;
+
+  elements.filePage.append(title, body, link);
+  renderResearcherArchive(fileId);
+  setDialogueText("Frog", researcherFileFrogLine(fileId));
+}
+
+function renderResearcherNotes() {
+  elements.fileNotes.innerHTML = "";
+
+  const intro = document.createElement("li");
+  intro.textContent = "Goal: learn how each observer failed. The thesis needs contradiction, identity, and containment.";
+  elements.fileNotes.append(intro);
+
+  researcherArchiveState.opened.forEach((fileId) => {
+    const item = document.createElement("li");
+    item.textContent = researcherFiles[fileId].failure;
+    elements.fileNotes.append(item);
+  });
+}
+
+function researcherFileFrogLine(fileId) {
+  if (fileId === "child") return "The sky closing wasn't darkness. It was everything losing distance from everything else.";
+  if (fileId === "comparison") return "They tried to make everyone agree, and the room got simpler than people could survive.";
+  if (fileId === "transcription") return "A cleaner record made a person smaller. I hate that I understand that.";
+  if (researcherArchiveState.opened.length >= 4) return "I know these voices. Not clearly. Maybe that's why I'm still me.";
+  return "This feels less like evidence and more like someone trying not to disappear.";
+}
+
+function handleArchiveSubmit(event) {
+  event.preventDefault();
+
+  if (researcherArchiveState.completed) return;
+
+  const thesis = normalizeWitnessPhrase(elements.archiveThesis.value);
+  const openedEnough = researcherArchiveState.opened.length >= 5;
+  const understandsContradiction = thesis.includes("contradiction") || thesis.includes("disagreement");
+  const understandsIdentity = thesis.includes("identity") || thesis.includes("separate") || thesis.includes("individual");
+  const understandsContainment = thesis.includes("contain") || thesis.includes("seal");
+
+  if (!openedEnough) {
+    setDialogueText("Frog", "Not enough of them are here yet. We need more failures before we trust the pattern.");
+    return;
+  }
+
+  if (!understandsContradiction || !understandsIdentity || !understandsContainment) {
+    setDialogueText("Frog", "Close. But the thesis needs the thing they missed: disagreement protects identity, and alignment has to be contained.");
+    return;
+  }
+
+  researcherArchiveState.completed = true;
+  elements.continueButton.classList.remove("is-hidden");
+  elements.archiveStatus.textContent = "Observer files resolved: containment thesis accepted";
+  maybeResearcherInterrupt("frog");
+  setDialogueText("Frog", "They failed because they wanted one perfect truth. I survived because I couldn't keep one.");
+}
+
+function renderFinalSeal() {
+  elements.sealStatus.textContent = finalSealState.completed
+    ? "Containment complete. Motion has ceased."
+    : finalSealState.prepared
+      ? "Containment prepared. Awaiting player activation."
+      : "Containment unresolved.";
+  elements.activateSeal.classList.toggle("is-hidden", !finalSealState.prepared || finalSealState.completed);
+}
+
+function handleSealPrepare(event) {
+  event.preventDefault();
+
+  if (finalSealState.completed) return;
+
+  const form = new FormData(elements.sealForm);
+  const vessel = form.get("vessel");
+  const phrase = normalizeWitnessPhrase(form.get("phrase") || "");
+  const correctPhrase = "let them remain different";
+
+  if (vessel !== "frog" || phrase !== correctPhrase) {
+    setDialogueText("Frog", "No... the vessel and the refusal have to match what we learned from the archive.");
+    return;
+  }
+
+  finalSealState.prepared = true;
+  renderFinalSeal();
+
+  // Move to the realization dialogue first
+  state.sceneIndex = scenes.findIndex(s => s.title === "The Sky Closed");
+  loadScene();
+}
+
+function handleSealActivation() {
+  if (!finalSealState.prepared || finalSealState.completed) return;
+
+  finalSealState.completed = true;
+  elements.continueButton.classList.remove("is-hidden");
+  elements.game.classList.add("is-still");
+  renderFinalSeal(); // This will now lead to the final dialogue scene "The Sky Closed - Final Moments"
+
+  state.sceneIndex = scenes.findIndex(s => s.title === "The Sky Closed - Final Moments");
+  loadScene();
+}
+
 function setCandellaDialogue(speaker, text) {
   elements.speaker.textContent = speaker;
   elements.speakerTitle.textContent = speakerTitleFor(speaker);
@@ -1457,10 +2025,14 @@ function renderMemoryNotes() {
 
   if (candellaState.notes.length === 0) {
     const item = document.createElement("li");
-    item.textContent = "Watch what still means the same thing after it changes.";
+    item.textContent = "Progress: 0/5 notes. Revisit each fragment until Frog writes what its role became.";
     elements.memoryList.append(item);
     return;
   }
+
+  const progress = document.createElement("li");
+  progress.textContent = `Progress: ${candellaState.notes.length}/5 notes. Selection unlocks after every fragment has a note.`;
+  elements.memoryList.append(progress);
 
   candellaState.notes.slice(-5).forEach((noteText) => {
     const item = document.createElement("li");
@@ -1569,28 +2141,35 @@ function handleSectionClick(sectionId) {
 }
 
 function updateVerdantLocks(sectionId) {
-  if (sectionId === "overview") {
-    verdantState.sectionStates.anomaly.unlocked = true;
-  }
+  const path = verdantState.attemptPath.join(">");
 
-  if (sectionId === "anomaly" && verdantState.visited.includes("overview")) {
+  if (sectionId === "anomaly") {
     verdantState.truthState.keyedByAnomaly = true;
-    verdantState.sectionStates.stationIndex.unlocked = true;
+    verdantState.sectionStates.overview.unlocked = true;
   }
 
-  if (sectionId === "stationIndex" && verdantState.truthState.keyedByAnomaly) {
-    verdantState.truthState.coherentIndex = true;
+  if (verdantState.attemptPath.length >= 2 || path.endsWith("anomaly>overview")) {
     verdantState.sectionStates.transit.unlocked = true;
   }
 
-  if (sectionId === "transit" && verdantState.truthState.coherentIndex) {
+  if (verdantState.attemptPath.length >= 3 || path.endsWith("anomaly>overview>transit")) {
+    verdantState.sectionStates.stationIndex.unlocked = true;
+  }
+
+  if (path.endsWith("anomaly>overview>transit")) {
     verdantState.truthState.coherentTransit = true;
-    elements.routePanel.classList.remove("is-hidden");
+  }
+
+  if (path.endsWith("anomaly>overview>transit>stationIndex")) {
+    verdantState.truthState.coherentIndex = true;
+    if (!verdantState.confirmedOnce) {
+      elements.routePanel.classList.remove("is-hidden");
+    }
   }
 }
 
 function updateVerdantProgress(sectionId) {
-  const expected = ["overview", "anomaly", "stationIndex", "transit"][verdantState.validPathProgress];
+  const expected = verdantCorrectPath[verdantState.validPathProgress];
 
   if (sectionId === expected) {
     verdantState.validPathProgress += 1;
@@ -1604,10 +2183,8 @@ function updateVerdantProgress(sectionId) {
     return;
   }
 
-  if (verdantState.attemptPath.length > 1) {
-    verdantState.misreadCount += 1;
-  }
-  verdantState.validPathProgress = sectionId === "overview" ? 1 : 0;
+  verdantState.misreadCount += 1;
+  verdantState.validPathProgress = sectionId === verdantCorrectPath[0] ? 1 : 0;
 }
 
 function renderVerdantInterface(activeSection = "") {
@@ -1645,46 +2222,49 @@ function verdantSectionContent(sectionId) {
   if (storyState.phaseTwoActive && sectionId === "anomaly") {
     return {
       title: "Anomaly Log",
-      body: "Observer fragments detected between stations. They are not ghosts. They are partial alignments remembering the researchers incorrectly."
+      body: "Observer fragments detected. They are not ghosts. They are partial alignments remembering the researchers incorrectly. Consensus is erasing the individual."
     };
   }
 
   const firstRead = verdantState.visited.filter((visitedId) => visitedId === sectionId).length === 1;
   const path = verdantState.attemptPath.join(">");
-  const onValidPath = path.endsWith("overview>anomaly>stationIndex>transit") || verdantState.validPathProgress > verdantSections[sectionId].order;
+  const orderPosition = verdantCorrectPath.indexOf(sectionId);
+  const onValidPath = path.endsWith("anomaly>overview>transit>stationIndex") || verdantState.validPathProgress > orderPosition;
 
   if (sectionId === "overview") {
     return {
       title: "System Overview",
-      body: firstRead
-        ? "Verdant Rail connects every valley settlement through one living route. Begin with system shape before trusting local station records."
-        : "Overview revision: the rail cannot be understood from destinations alone. Anomalies define which stations are real."
+      body: path.includes("anomaly>overview")
+        ? "Overview revision accepted: Verdant Rail is not understood by starting with the map. The break names the shape; the system overview only becomes truthful after the anomaly."
+        : firstRead
+          ? "Premature overview: Verdant Rail appears to connect every settlement through one clean route. This page is too neat. It has not learned what broke."
+          : "Overview warning: if this page comes before the anomaly, it invents consistency instead of finding it."
     };
   }
 
   if (sectionId === "anomaly") {
     return {
       title: "Anomaly Log",
-      body: verdantState.visited[0] === "overview"
-        ? "Anomaly seed accepted. The document now recognizes ROOT, GLASS, RAIN, and STAR as a coherent chain. Station records may stabilize."
-        : "Anomaly log opened without context. All station names remain plausible. The archive will not say which ones breathe."
+      body: verdantState.visited[0] === "anomaly"
+        ? "Anomaly seed accepted. Begin with the break, then read the system it damaged. The archive marks this as the first real rail."
+        : "Anomaly log recovered late. It still explains the damage, but the earlier pages have already pretended to be whole."
     };
   }
 
   if (sectionId === "stationIndex") {
     return {
       title: "Station Index",
-      body: verdantState.truthState.keyedByAnomaly
-        ? "Stabilized index: ROOT -> GLASS -> RAIN -> STAR. Harbor appears in every copy, but does not belong to this route."
-        : "Station index: ROOT, HARBOR, GLASS, RAIN, STAR. All entries report consistent service. This consistency is not proof."
+      body: path.endsWith("anomaly>overview>transit>stationIndex")
+        ? "Final index stabilized: ROOT -> GLASS -> RAIN -> STAR. Harbor is visible because wrong readings scarred the archive, but it is not part of the living route."
+        : "Station index opened too early: ROOT, HARBOR, GLASS, RAIN, STAR. Harbor looks consistent, which is exactly why it is dangerous."
     };
   }
 
   return {
     title: "Transit Behavior Report",
-    body: onValidPath && verdantState.truthState.coherentIndex
-      ? "Transit resolves only when read after the stabilized index. Valid movement follows ROOT, then GLASS, then RAIN, then STAR."
-      : "Transit report: trains arrive before departure and depart after arrival. Harbor remains consistent. The report appears stable, but the route does not."
+    body: onValidPath && path.includes("anomaly>overview>transit")
+      ? "Transit behavior stabilized before station names were trusted. Movement resolves as ROOT, then GLASS, then RAIN, then STAR. Check the index last, not first."
+      : "Transit report opened out of sequence: trains arrive before departure and depart after arrival. Harbor remains consistent. Consistency is not proof."
   };
 }
 
@@ -1701,39 +2281,46 @@ function renderSequenceNotes() {
 }
 
 function verdantSequenceNotes() {
-  if (verdantState.visited.length === 0) return ["The archive has not been read yet."];
+  const notes = [
+    `Archive scars: ${Math.min(verdantState.misreadCount, 2)}/2 required.`,
+    `Current path: ${verdantState.attemptPath.map((sectionId) => verdantSections[sectionId].alias).join(" -> ") || "none"}.`
+  ];
 
-  const notes = [];
+  if (verdantState.visited.length === 0) {
+    notes.push("First concrete task: test paths until the archive records two scars.");
+    return notes;
+  }
 
-  if (verdantState.visited[0] === "overview") notes.push("Starting with the overview made later sections less slippery.");
-  if (verdantState.visited.includes("anomaly")) notes.push("The anomaly log behaves like a key, not a report.");
-  if (verdantState.truthState.coherentIndex) notes.push("The station index only settled after the anomaly log.");
-  if (verdantState.truthState.coherentTransit) notes.push("Transit finally made sense after the stations stabilized.");
-  if (verdantState.validPathProgress === 0 && verdantState.visited.length > 1) notes.push("This reading path bent the document out of shape.");
+  if (verdantState.visited[0] === "anomaly") notes.push("The anomaly log wants to be first. It names the damage before the map can lie.");
+  if (verdantState.attemptPath.join(">").includes("anomaly>overview")) notes.push("The overview became clearer only after the anomaly.");
+  if (verdantState.truthState.coherentTransit) notes.push("Transit stabilized before the station index. Movement comes before names.");
+  if (verdantState.truthState.coherentIndex) notes.push("The station index settled last, after the route was already moving.");
+  if (verdantState.validPathProgress === 0 && verdantState.visited.length > 1) notes.push("This reading path bent the document out of shape. That failure is useful.");
+  if (verdantState.misreadCount >= 2 && !verdantState.truthState.coherentIndex) notes.push("The true path is not left to right. Start with the page that admits something broke.");
 
-  return notes.slice(-4);
+  return notes.slice(-5);
 }
 
 function verdantStatusText() {
   if (verdantState.completed) return "Document state: synchronized";
-  if (verdantState.truthState.coherentTransit) return "Document state: route phrase generated";
-  if (verdantState.truthState.coherentIndex) return "Document state: station index stabilized";
+  if (verdantState.truthState.coherentIndex) return "Document state: route phrase generated";
+  if (verdantState.truthState.coherentTransit) return "Document state: transit stabilized";
   if (verdantState.truthState.keyedByAnomaly) return "Document state: anomaly key accepted";
   return `Document state: unresolved / scars ${verdantState.misreadCount}:2`;
 }
 
 function verdantFrogLine(sectionId) {
   if (verdantState.validPathProgress === 4) return "I think the document finally read itself in one direction.";
-  if (sectionId === "overview") return "Every time I read this differently, it feels like a different place.";
-  if (sectionId === "anomaly") return "Is the document changing... or are we reading it wrong?";
-  if (sectionId === "stationIndex") return "Some of these stations feel real only after the anomaly log.";
-  return "The route only makes sense if the earlier pages prepared it.";
+  if (sectionId === "overview") return "The overview only sounds honest after the anomaly. Otherwise it feels too clean.";
+  if (sectionId === "anomaly") return "This is the page that admits something broke. Maybe that's why it has to come first.";
+  if (sectionId === "stationIndex") return "The station names are the last thing I trust. Harbor keeps pretending it belongs.";
+  return "The trains make more sense before the station list does. That's weird, but it tracks.";
 }
 
 function verdantKeeperHint() {
-  if (verdantState.visited.length >= 10) return "True sequence is not immediately apparent. Seek deeper connections."; // Increased visits
-  if (verdantState.visited.length >= 6) return "The archive guards its true path. Read carefully."; // Increased visits
-  return "Consult the archive. The truth is in the order.";
+  if (verdantState.visited.length >= 10) return "Do not begin with the section that claims completion. Begin with the flaw.";
+  if (verdantState.visited.length >= 6) return "The correct path is not the visible arrangement. Dependencies determine truth.";
+  return "Consult the archive. The truth is in the order, not the layout.";
 }
 
 function handleRouteSubmit(event) {
@@ -1744,13 +2331,15 @@ function handleRouteSubmit(event) {
     .split(/[^a-z]+/)
     .filter(Boolean)
     .map((word) => (word === "index" || word === "station" || word === "stations" ? "stationIndex" : word))
-    .map((word) => (word === "behavior" || word === "report" ? "transit" : word));
+    .map((word) => (word === "behavior" || word === "report" ? "transit" : word))
+    .map((word) => (word === "system" ? "overview" : word))
+    .map((word) => (word === "log" ? "anomaly" : word));
   const compact = submitted.filter((word, index) => index === 0 || word !== submitted[index - 1]);
-  const expected = ["overview", "anomaly", "stationIndex", "transit"];
+  const expected = verdantCorrectPath;
   const valid = expected.every((sectionId, index) => compact[index] === sectionId);
 
   if (!valid) {
-    setDialogueText("Frog", "No... that order makes the same words, but not the same truth.");
+    setDialogueText("Frog", "No... that order makes the same words, but not the same truth. I don't think this one is left to right.");
     return;
   }
 
@@ -1796,40 +2385,22 @@ function resetVerdantForConfirmationPass() {
 function handleShardClick(shardId) {
   if (glassState.completed) return;
 
-  if (glassState.awaitingEcho) {
-    appendEchoLine("System", "Echo collision. The last reflection has not arrived yet.", true);
-    setDialogueText("Frog", "If I rush it, the echo stops counting as mine.");
-    return;
-  }
-
   prepareAudioForInteraction();
   playFragmentTone(shardId);
   glassState.actions.push(shardId);
   glassState.shardClicks[shardId] += 1;
   glassState.corruptionLevel += 1;
-  appendEchoLine("Frog", glassShards[shardId].normal, false);
+  glassState.shardModes[shardId] = (glassState.shardModes[shardId] + 1) % glassShards[shardId].readings.length;
+
+  const reading = currentGlassReading(shardId);
+  appendEchoLine(glassShards[shardId].label, `${reading.tag}: ${reading.text}`, reading.tag !== "Anchor");
   setDialogueText("Frog", glassFrogLine(shardId));
-  glassState.awaitingEcho = true;
-
-  const delay = 3500 + Math.floor(Math.random() * 4200);
-  const timer = window.setTimeout(() => {
-    if (currentScene().type !== "glassPuzzle" || glassState.completed) return;
-    glassState.echoQueue.push(shardId);
-    glassState.resolvedEchoes[shardId] += 1;
-    glassState.awaitingEcho = false;
-    appendEchoLine("Frog (echo)", glassEchoText(shardId), true);
-    mutateEchoHistory();
-    renderGlassStatus();
-    maybeCompleteGlass();
-  }, delay);
-
-  glassState.timers.push(timer);
+  renderGlassButtons();
   renderGlassStatus();
 }
 
-function glassEchoText(shardId) {
-  const shard = glassShards[shardId];
-  return glassState.corruptionLevel >= 6 ? shard.corrupt : shard.echo;
+function currentGlassReading(shardId) {
+  return glassShards[shardId].readings[glassState.shardModes[shardId]];
 }
 
 function appendEchoLine(speaker, text, echo) {
@@ -1843,19 +2414,12 @@ function appendEchoLine(speaker, text, echo) {
   }
 }
 
-function mutateEchoHistory() {
-  Array.from(elements.echoLog.children).slice(2).forEach((line, index) => {
-    if (index % 2 === 0 && !line.textContent.includes("Glasshollow")) {
-      line.textContent = line.textContent.replace(" is ", " was ");
-    }
-  });
-}
-
 function renderGlassLog() {
   if (elements.echoLog.children.length === 0) {
-    appendEchoLine("System", storyState.phaseTwoActive ? "Echo detected before observation. This should not be possible." : "Echoes will appear after observation.", false);
+    appendEchoLine("System", storyState.phaseTwoActive ? "ALERT: Mirror accord corrupted by consensus. Disagreement is failing." : "Cycle each shard. One reading will erase the contradiction, one will invert it, and one will let it survive.", false);
   }
 
+  renderGlassButtons();
   renderGlassStatus();
 }
 
@@ -1863,30 +2427,72 @@ function renderGlassStatus() {
   elements.glassStatus.textContent = glassKeeperLine();
 }
 
+function renderGlassButtons() {
+  elements.shardButtons.forEach((button) => {
+    const shardId = button.dataset.shard;
+    const reading = currentGlassReading(shardId);
+    const shard = glassShards[shardId];
+    button.textContent = `${shard.label}: ${reading.tag}`;
+    button.classList.toggle("is-active", glassState.shardClicks[shardId] > 0);
+  });
+}
+
 function glassKeeperLine() {
-  if (glassState.corruptionLevel >= 12) return "Echo saturation complete. The reflections have caught up."; // Increased corruption level
-  if (glassState.corruptionLevel >= 7) return "Observe with patience. The echoes will reveal themselves."; // Increased corruption level
-  if (glassState.corruptionLevel >= 4) return "The reflections shift. Do not seek easy answers."; // Increased corruption level
-  return "Echo synchronization is nominal.";
+  if (glassState.completed) return storyState.phaseTwoActive ? "The mirror is holding, but the frame is melting." : "Mirror accord complete. Contradiction remains contained.";
+  if (glassState.failedHolds >= 2) return "Do not silence one side of the mirror. Preserve the contradiction.";
+  if (glassState.corruptionLevel >= 6) return "The reflections are legible. Hold only what can survive disagreement.";
+  if (glassState.corruptionLevel >= 3) return "One shard is an anchor. The others must learn to disagree without breaking.";
+  return "Mirror accord unresolved.";
 }
 
 function glassFrogLine(shardId) {
-  if (shardId === "room") return "We are in Glasshollow. That part keeps surviving.";
-  if (glassState.corruptionLevel >= 5) return "Or maybe I'm reacting before it happens.";
-  return "I feel like I've already reacted to this.";
+  const reading = currentGlassReading(shardId);
+
+  if (shardId === "room" && reading.tag === "Anchor") return "We are in Glasshollow. That part shouldn't become fancy. It just needs to stay true.";
+  if (reading.tag === "Accord") return "That one feels better. It isn't choosing one side, but it isn't falling apart either.";
+  if (reading.tag === "Reversal" || reading.tag === "Negation") return "That only flips the statement. It still traps us in one answer.";
+  return "That sounds clean, but clean might be the problem here.";
 }
 
-function maybeCompleteGlass() {
-  const allShardsRepeated = Object.values(glassState.shardClicks).every((count) => count >= 2);
-  const allEchoesResolved = Object.values(glassState.resolvedEchoes).every((count) => count >= 2);
+function handleMirrorSubmit() {
+  if (glassState.completed) return;
 
-  if (glassState.corruptionLevel < 12 || glassState.echoQueue.length < 8 || !allShardsRepeated || !allEchoesResolved) return;
+  const allObserved = Object.values(glassState.shardClicks).every((count) => count > 0);
+  if (!allObserved) {
+    setDialogueText("Frog", "I need to look into every shard before I trust the mirror.");
+    return;
+  }
+
+  const correct = Object.keys(glassShards).every((shardId) => {
+    return glassState.shardModes[shardId] === glassShards[shardId].correct;
+  });
+
+  if (!correct) {
+    glassState.failedHolds += 1;
+    appendEchoLine("Mirror", glassFailureLine(), true);
+    renderGlassStatus();
+    setDialogueText("Frog", glassHoldFailureDialogue());
+    return;
+  }
 
   glassState.completed = true;
   recordInsight("contradictionCanRemainTrue");
+  appendEchoLine("Mirror", "Accord held: one place remains named; the other reflections survive by disagreeing.", false);
+  renderGlassStatus();
   elements.continueButton.classList.remove("is-hidden");
   maybeResearcherInterrupt("glass");
-  setDialogueText("Time Keeper", "Echo saturation complete. Proceeding to containment phase.");
+  setDialogueText("Time Keeper", "Mirror accord complete. Proceeding to containment phase.");
+}
+
+function glassFailureLine() {
+  if (glassState.shardModes.room !== glassShards.room.correct) return "The room lost its name. Without an anchor, every reflection becomes noise.";
+  return "A reflection was forced to choose one side. The mirror rejects perfect agreement.";
+}
+
+function glassHoldFailureDialogue() {
+  if (glassState.shardModes.room !== glassShards.room.correct) return "Glasshollow has to stay Glasshollow. That's the anchor.";
+  if (glassState.failedHolds >= 2) return "Safety, memory, and me... I think those have to hold both versions at once.";
+  return "Something in there is too absolute. It either denies the fear or denies the comfort.";
 }
 
 function handleStallClick(itemId) {
@@ -1940,6 +2546,23 @@ function renderRainMarket(activeItem = "") {
     const index = Math.min(item.drift, variants.length - 1);
     elements.marketCard.textContent = `${rainStallLabel(activeItem, item.drift)}\n\n${variants[index]}`;
   }
+
+  renderMarketLedger();
+}
+
+function renderMarketLedger() {
+  elements.marketLedger.innerHTML = "";
+
+  const intro = document.createElement("li");
+  intro.textContent = `Goal: test all six concepts, then select exactly three survivors. Decisions: ${rainState.globalDriftLevel}/10.`;
+  elements.marketLedger.append(intro);
+
+  Object.keys(rainState.items).forEach((itemId) => {
+    const evidence = rainState.evidence[itemId];
+    const item = document.createElement("li");
+    item.textContent = `${rainStallLabel(itemId, rainState.items[itemId].drift)}: kept ${evidence.keep}, traded ${evidence.trade}, drift ${rainState.items[itemId].drift}`;
+    elements.marketLedger.append(item);
+  });
 }
 
 function rainStallLabel(itemId, drift) {
@@ -1972,7 +2595,7 @@ function rainTradeLine(itemId) {
 }
 
 function rainKeeperLine() {
-  if (storyState.phaseTwoActive) return "Value drift has become observer drift.";
+  if (storyState.phaseTwoActive) return "Value drift has become observer drift. The market is remembering the price of silence.";
   if (rainState.globalDriftLevel >= 10) return "Do not assign permanence to meaning.";
   if (rainState.globalDriftLevel >= 5) return "Value drift is within expected range.";
   return "Exchange will stabilize perception.";
@@ -1983,15 +2606,45 @@ function maybeCompleteRain() {
     return rainState.evidence[itemId].keep >= 1 && rainState.evidence[itemId].trade >= 1 && rainState.items[itemId].drift >= 2;
   });
   const marketFullySampled = Object.values(rainState.items).every((item) => item.drift >= 1);
-  const unstableExposed = ["beginning", "sound", "shelter"].every((itemId) => rainState.evidence[itemId].trade >= 2);
+  const unstableExposed = ["beginning", "sound", "shelter"].every((itemId) => rainState.evidence[itemId].trade >= 1);
 
-  if (rainState.globalDriftLevel < 16 || !stableTouched || !marketFullySampled || !unstableExposed) return;
+  if (rainState.globalDriftLevel < 10 || !stableTouched || !marketFullySampled || !unstableExposed || rainState.unlockedFinal) return;
 
-  rainState.completed = true;
-  recordInsight("meaningSurvivesDrift");
-  elements.continueButton.classList.remove("is-hidden");
-  maybeResearcherInterrupt("rain");
-  setDialogueText("Time Keeper", "Good.");
+  rainState.unlockedFinal = true;
+  elements.meaningPanel.classList.remove("is-hidden");
+  setDialogueText("Frog", "The market is ready. Now we name the three meanings that kept their emotional shape.");
+}
+
+function handleMeaningSubmit(event) {
+  event.preventDefault();
+
+  if (rainState.completed) return;
+
+  const selected = Array.from(elements.meaningPanel.querySelectorAll("input:checked")).map((input) => input.value);
+
+  if (selected.length !== 3) {
+    setDialogueText("Frog", "It feels like exactly three meanings survived the trades.");
+    return;
+  }
+
+  const stableSelections = selected.filter((itemId) => rainState.items[itemId].stable).length;
+
+  if (stableSelections === 3) {
+    rainState.completed = true;
+    recordInsight("meaningSurvivesDrift");
+    elements.meaningPanel.classList.add("is-hidden");
+    elements.continueButton.classList.remove("is-hidden");
+    maybeResearcherInterrupt("rain");
+    setDialogueText("Time Keeper", "Good. Meaning survived because it was allowed to drift.");
+    return;
+  }
+
+  if (stableSelections >= 2) {
+    setDialogueText("Frog", "Almost. One of those changed what it was pretending to be.");
+    return;
+  }
+
+  setDialogueText("Frog", "No... those labels moved too much. I need the feelings that came back after both choices.");
 }
 
 function handleGateSubmit(event) {
@@ -2029,12 +2682,7 @@ function handleGateSubmit(event) {
     return;
   }
 
-  if (isGateSolution() && gateState.attempts >= 3) { // Increased attempts for final gate
-    if (gateState.nearMisses < 1) {
-      setDialogueText("Frog", "It fits too neatly. We need to feel one almost-collapse before the gate believes us.");
-      return;
-    }
-
+  if (isGateSolution()) {
     gateState.completed = true;
     recordInsight("paradoxCanHoldTogether");
     gateState.alignmentState = "paradox satisfied";
@@ -2048,18 +2696,13 @@ function handleGateSubmit(event) {
     return;
   }
 
-  if (isGateSolution()) {
-    setDialogueText("Frog", "This feels right, but something needs to be confirmed. The Gate needs more conviction."); // Hint for multiple submissions
-    return;
-  }
-
   if (gateState.contradictionScore >= 3) {
     gateState.nearMisses += 1;
-    setDialogueText("Time Keeper", "Do not attempt full consistency. The path is not straight."); // More explicit hint
+    setDialogueText("Time Keeper", "One lock is still translating the wrong lesson. Do not attempt full consistency.");
     return;
   }
 
-  setDialogueText("Frog", "This is broken, but not in the right shape. The Gate is not aligning."); // More explicit hint
+  setDialogueText("Frog", "This is broken, but not in the right shape. Each lock has to echo one world we already understood.");
 }
 
 function calculateGateContradictionScore() {
@@ -2069,7 +2712,7 @@ function calculateGateContradictionScore() {
   if (gateState.locks.rail === "wrong_station") score += 1;
   if (gateState.locks.echo === "accepted_contradiction") score += 1;
   if (gateState.locks.memory === "drifting") score += 1;
-  
+
   // Remove the condition that resets score if fully consistent, to make it harder to accidentally get a high score
   // if (isFullyConsistentGate()) score = 0;
 
@@ -2109,17 +2752,267 @@ function isWitnessPhraseValid(value) {
 }
 
 function gateKeeperLine() {
-  if (gateState.attempts >= 4) return "Do not attempt full consistency.";
   if (gateState.completed) return "Alignment complete.";
-  return "You are approaching final alignment.";
+  if (gateState.contradictionScore >= 3) return "You are translating the fragments correctly. Do not attempt full consistency.";
+  return "You are approaching final alignment. Translate each world, then write what survived.";
+}
+
+function resetCurrentPuzzle() {
+  const scene = currentScene();
+
+  if (!isPuzzleScene(scene)) return;
+
+  if (scene.type === "candellaPuzzle") {
+    resetCandellaPuzzle();
+    showCandellaPuzzle();
+    setCandellaDialogue("Frog", "Okay. Fresh look. We need five notes, then exactly three fragments that keep their role.");
+    return;
+  }
+
+  if (scene.type === "verdantPuzzle") {
+    resetVerdantPuzzle();
+    showVerdantPuzzle();
+    setDialogueText("Frog", "Reset. The archive still wants two scars, then the reading path that stabilizes it.");
+    return;
+  }
+
+  if (scene.type === "glassPuzzle") {
+    resetGlassPuzzle();
+    showGlassPuzzle();
+    setDialogueText("Frog", "Reset. One shard needs to stay an anchor. The others need to hold contradiction.");
+    return;
+  }
+
+  if (scene.type === "rainPuzzle") {
+    resetRainPuzzle();
+    showRainPuzzle();
+    setDialogueText("Frog", "Reset. Test the concepts, watch the ledger, then name the three survivors.");
+    return;
+  }
+
+  if (scene.type === "finalGatePuzzle") {
+    resetFinalGatePuzzle();
+    showFinalGatePuzzle();
+    setDialogueText("Frog", "Reset. Four locks, four surviving words. No perfect consistency.");
+    return;
+  }
+
+  if (scene.type === "researcherArchive") {
+    resetResearcherArchive();
+    showResearcherArchive();
+    setDialogueText("Frog", "Reset. The files still disagree. That's where the human parts are.");
+    return;
+  }
+
+  if (scene.type === "spectrogramPuzzle") { // NEW
+    state.completed = false;
+    elements.spectrogramInput.value = "";
+    elements.continueButton.classList.add("is-hidden");
+    setDialogueText("Frog", "Reset. The signal is still there. Listen closely.");
+    return;
+  }
+
+  if (scene.type === "finalSeal") {
+    resetFinalSeal();
+    showFinalSeal();
+    setDialogueText("Frog", "Reset. It's still my choice. And yours.");
+    return;
+  }
+
+  state.completed = false;
+  showPuzzleScene();
+}
+
+function resetCandellaPuzzle() {
+  candellaState.totalClicks = 0;
+  candellaState.clickHistory = [];
+  candellaState.fragmentClicks = {
+    candy_gate: 0,
+    confetti_bridge: 0,
+    laughter_cart: 0,
+    final_arch: 0,
+    broken_wagon: 0
+  };
+  candellaState.unlockedFinal = false;
+  candellaState.clickOrderIndex = {};
+  candellaState.lastClickedFragment = "";
+  candellaState.completed = false;
+  candellaState.keeperHintLevel = 0;
+  candellaState.notes = [];
+  storyState.insights.identityPersistsThroughChange = false;
+  elements.fragmentButtons.forEach((button) => button.classList.remove("has-shifted"));
+  elements.stabilityPanel.reset();
+  elements.stabilityPanel.classList.add("is-hidden");
+  elements.continueButton.classList.add("is-hidden");
+  renderMemoryNotes();
+}
+
+function resetVerdantPuzzle() {
+  verdantState.visited = [];
+  verdantState.attemptPath = [];
+  verdantState.validPathProgress = 0;
+  verdantState.confirmedOnce = false;
+  verdantState.completed = false;
+  verdantState.misreadCount = 0;
+  verdantState.sectionStates = {
+    overview: { unlocked: true },
+    anomaly: { unlocked: true },
+    stationIndex: { unlocked: false },
+    transit: { unlocked: false }
+  };
+  verdantState.truthState = {
+    keyedByAnomaly: false,
+    coherentIndex: false,
+    coherentTransit: false
+  };
+  storyState.insights.truthRequiresBrokenSequence = false;
+  elements.routeInput.value = "";
+  elements.routePanel.classList.add("is-hidden");
+  elements.archivePage.innerHTML = '<p class="archive-title">Select a section.</p><p class="archive-body">The rail archive is waiting for a reading path.</p>';
+  elements.continueButton.classList.add("is-hidden");
+  renderVerdantInterface();
+}
+
+function resetGlassPuzzle() {
+  glassState.actions = [];
+  glassState.corruptionLevel = 0;
+  glassState.shardClicks = {
+    room: 0,
+    safe: 0,
+    memory: 0,
+    frog: 0
+  };
+  glassState.shardModes = {
+    room: 0,
+    safe: 0,
+    memory: 0,
+    frog: 0
+  };
+  glassState.failedHolds = 0;
+  glassState.completed = false;
+  storyState.insights.contradictionCanRemainTrue = false;
+  elements.echoLog.innerHTML = "";
+  elements.continueButton.classList.add("is-hidden");
+  renderGlassLog();
+}
+
+function resetRainPuzzle() {
+  rainState.items = {
+    beginning: { drift: 0, stable: false },
+    sound: { drift: 0, stable: false },
+    path: { drift: 0, stable: true },
+    certainty: { drift: 0, stable: true },
+    repetition: { drift: 0, stable: true },
+    shelter: { drift: 0, stable: false }
+  };
+  rainState.tradeHistory = [];
+  rainState.globalDriftLevel = 0;
+  rainState.activeItem = "";
+  rainState.unlockedFinal = false;
+  rainState.evidence = {
+    path: { keep: 0, trade: 0 },
+    certainty: { keep: 0, trade: 0 },
+    repetition: { keep: 0, trade: 0 },
+    beginning: { keep: 0, trade: 0 },
+    sound: { keep: 0, trade: 0 },
+    shelter: { keep: 0, trade: 0 }
+  };
+  rainState.completed = false;
+  storyState.insights.meaningSurvivesDrift = false;
+  elements.meaningPanel.reset();
+  elements.meaningPanel.classList.add("is-hidden");
+  elements.marketCard.textContent = "Choose a stall. Meanings are priced after inspection.";
+  elements.continueButton.classList.add("is-hidden");
+  renderRainMarket();
+}
+
+function resetFinalGatePuzzle() {
+  gateState.locks = {
+    candella: null,
+    rail: null,
+    echo: null,
+    memory: null
+  };
+  gateState.contradictionScore = 0;
+  gateState.alignmentState = "unstable";
+  gateState.attempts = 0;
+  gateState.nearMisses = 0;
+  gateState.completed = false;
+  storyState.insights.paradoxCanHoldTogether = false;
+  storyState.phaseTwoActive = false;
+  elements.game.classList.remove("is-corrupt", "is-phase-two");
+  elements.gateForm.reset();
+  elements.continueButton.classList.add("is-hidden");
+  renderGateStatus();
+}
+
+function resetResearcherArchive() {
+  researcherArchiveState.opened = [];
+  researcherArchiveState.completed = false;
+  elements.archiveThesis.value = "";
+  elements.filePage.innerHTML = '<p class="archive-title">Select a contaminated record.</p><p class="archive-body">The archive does not have an original version. It has surviving disagreements.</p>';
+  elements.continueButton.classList.add("is-hidden");
+  renderResearcherArchive();
+}
+
+function resetFinalSeal() {
+  finalSealState.prepared = false;
+  finalSealState.completed = false;
+  elements.sealForm.reset();
+  elements.activateSeal.classList.add("is-hidden"); // Ensure it's hidden on reset
+  elements.continueButton.classList.add("is-hidden");
+  elements.game.classList.remove("is-still");
+  renderFinalSeal();
+}
+
+function resetExperienceState() {
+  state.lineIndex = 0;
+  state.completed = false;
+  storyState.phase = 1;
+  storyState.phaseTwoActive = false;
+  storyState.researcherSeen = [];
+  storyState.insights = {
+    identityPersistsThroughChange: false,
+    truthRequiresBrokenSequence: false,
+    contradictionCanRemainTrue: false,
+    meaningSurvivesDrift: false,
+    paradoxCanHoldTogether: false
+  };
+
+  resetCandellaPuzzle();
+  resetVerdantPuzzle();
+  resetGlassPuzzle();
+  resetRainPuzzle();
+  resetFinalGatePuzzle();
+  resetResearcherArchive();
+  resetFinalSeal();
+  hideSpectrogramPuzzle();
+
+  if (elements.spectrogramInput) elements.spectrogramInput.value = "";
+  elements.researcherFragment.classList.add("is-hidden");
+  elements.game.classList.remove(
+    "is-corrupt",
+    "is-phase-two",
+    "is-still",
+    "is-blackout",
+    "is-flashing",
+    "is-shaking",
+    "is-spectrogram",
+    "is-archive",
+    "is-seal"
+  );
 }
 
 function showPuzzleScene() {
+  updateResetButtonVisibility();
   hideCandellaPuzzle();
   hideVerdantPuzzle();
   hideGlassPuzzle();
   hideRainPuzzle();
   hideFinalGatePuzzle();
+  hideResearcherArchive();
+  hideSpectrogramPuzzle(); // NEW
+  hideFinalSeal();
   clearEffects();
 
   const scene = currentScene();
@@ -2135,6 +3028,10 @@ function showPuzzleScene() {
       position: "left"
     });
     setDialogueText("Frog", "The stars... they're not where they're supposed to be. I think I can move them if I click the right patterns in the sky.");
+
+    if (storyState.phaseTwoActive) {
+      setDialogueText("Frog", "The stars are folding inward. I don't think I'm moving them anymore. I think they're coming to me.");
+    }
 
     elements.puzzleKicker.textContent = "Observatory Calibration";
     elements.puzzleLabel.innerHTML = `
@@ -2194,6 +3091,8 @@ function loadScene() {
   hideGlassPuzzle();
   hideRainPuzzle();
   hideFinalGatePuzzle();
+  hideResearcherArchive();
+  hideFinalSeal();
   setBackground(scene.background);
   setMusic(scene.music);
 
@@ -2219,6 +3118,21 @@ function loadScene() {
 
   if (scene.type === "finalGatePuzzle") {
     showFinalGatePuzzle();
+    return;
+  }
+
+  if (scene.type === "researcherArchive") {
+    showResearcherArchive();
+    return;
+  }
+
+  if (scene.type === "spectrogramPuzzle") { // NEW
+    showSpectrogramPuzzle();
+    return;
+  }
+
+  if (scene.type === "finalSeal") {
+    showFinalSeal();
     return;
   }
 
@@ -2259,6 +3173,21 @@ function advanceDialogue() {
     return;
   }
 
+  if (scene.type === "researcherArchive") {
+    if (researcherArchiveState.completed) completePuzzle();
+    return;
+  }
+
+  if (scene.type === "finalSeal") {
+    if (finalSealState.completed) completePuzzle();
+    return;
+  }
+
+  if (scene.type === "spectrogramPuzzle") {
+    if (state.completed) completePuzzle();
+    return;
+  }
+
   if (scene.type === "puzzle") {
     if (state.completed) completePuzzle();
     return;
@@ -2271,9 +3200,18 @@ function advanceDialogue() {
     return;
   }
 
+  if (scene.title === "The Sky Closed" && finalSealState.prepared && !finalSealState.completed) {
+    state.sceneIndex = scenes.findIndex((candidate) => candidate.type === "finalSeal");
+    state.lineIndex = 0;
+    loadScene();
+    setDialogueText("Frog", "It's time. You have to be the one to activate the seal.");
+    return;
+  }
+
   state.sceneIndex += 1;
 
   if (state.sceneIndex >= scenes.length) {
+    resetExperienceState();
     state.sceneIndex = 0;
   }
 
@@ -2282,8 +3220,10 @@ function advanceDialogue() {
 
 function completePuzzle() {
   state.sceneIndex += 1;
+  state.completed = false;
 
   if (state.sceneIndex >= scenes.length) {
+    resetExperienceState();
     state.sceneIndex = 0;
   }
 
@@ -2309,6 +3249,7 @@ function toggleAudio() {
 
 elements.continueButton.addEventListener("click", handleAdvanceInput);
 elements.backButton.addEventListener("click", handleBackInput);
+elements.resetButton.addEventListener("click", resetCurrentPuzzle);
 elements.audioToggle.addEventListener("click", toggleAudio);
 elements.fragmentButtons.forEach((button) => {
   button.addEventListener("click", () => handleFragmentClick(button.dataset.fragment));
@@ -2321,12 +3262,19 @@ elements.routePanel.addEventListener("submit", handleRouteSubmit);
 elements.shardButtons.forEach((button) => {
   button.addEventListener("click", () => handleShardClick(button.dataset.shard));
 });
+elements.mirrorSubmit.addEventListener("click", handleMirrorSubmit);
 elements.stallButtons.forEach((button) => {
   button.addEventListener("click", () => handleStallClick(button.dataset.item));
 });
 elements.keepMeaning.addEventListener("click", () => resolveMeaningChoice("keep"));
 elements.tradeMeaning.addEventListener("click", () => resolveMeaningChoice("trade"));
+elements.meaningPanel.addEventListener("submit", handleMeaningSubmit);
 elements.gateForm.addEventListener("submit", handleGateSubmit);
+elements.archiveForm.addEventListener("submit", handleArchiveSubmit);
+elements.sealForm.addEventListener("submit", handleSealPrepare);
+const spectrogramForm = document.querySelector("#spectrogramForm");
+if (spectrogramForm) spectrogramForm.addEventListener("submit", handleSpectrogramSubmit);
+elements.activateSeal.addEventListener("click", handleSealActivation);
 
 window.addEventListener("keydown", (event) => {
   if (event.key === " " || event.key === "Enter") {
