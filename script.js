@@ -1927,14 +1927,13 @@ function handleSealPrepare(event) {
   const form = new FormData(elements.sealForm);
   const vessel = form.get("vessel");
   const phrase = normalizeWitnessPhrase(form.get("phrase") || "");
-  const correctPhrase = "seperate differences reduced contradiction";
 
-  if (!storyState.finalSealUnlocked) {
+  if (!storyState.finalSealUnlocked && currentScene().type !== "finalSeal") {
     setDialogueText("Frog", "No... not yet. We have to understand what containment means before we choose it.");
     return;
   }
 
-  if (vessel !== "frog" || phrase !== correctPhrase) {
+  if (vessel !== "frog" || !isFinalSealPhraseValid(phrase)) {
     setDialogueText("Frog", "No... the vessel and the refusal have to match what we learned from the archive.");
     return;
   }
@@ -1945,6 +1944,19 @@ function handleSealPrepare(event) {
   // Move to the realization dialogue first
   state.sceneIndex = scenes.findIndex(s => s.title === "The Sky Closed");
   loadScene();
+}
+
+function isFinalSealPhraseValid(phrase) {
+  const acceptedPhrases = [
+    "seperate differences reduced contradiction",
+    "separate differences reduced contradiction",
+    "let them remain different"
+  ];
+
+  if (acceptedPhrases.includes(phrase)) return true;
+
+  const hasCoreWords = ["differences", "reduced", "contradiction"].every((word) => phrase.includes(word));
+  return hasCoreWords && (phrase.includes("seperate") || phrase.includes("separate"));
 }
 
 function handleSealActivation() {
