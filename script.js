@@ -1296,14 +1296,14 @@ function maybeShowTimeKeeperHint() {
 }
 
 function timeKeeperCandellaHint() {
-  if (candellaState.totalClicks >= 10) return "...do not rely on fixed interpretation.";
-  if (candellaState.totalClicks >= 5) return "Maintain alignment consistency.";
-  return "Restore the parade fragments.";
+   if (candellaState.totalClicks >= 15) return "...do not rely on fixed interpretation. The world does not stay still.";
+   if (candellaState.totalClicks >= 8) return "Observe what remains, not what shifts.";
+   return "Restore the parade fragments.";
 }
 
 function maybeUnlockStabilitySelection() {
-  const allRevisited = Object.values(candellaState.fragmentClicks).every((count) => count >= 2);
-  const enoughInstability = candellaState.totalClicks >= 15;
+  const allRevisited = Object.values(candellaState.fragmentClicks).every((count) => count >= 3); // Increased to 3 clicks
+  const enoughInstability = candellaState.totalClicks >= 20; // Increased to 20 total clicks
 
   if (!allRevisited || !enoughInstability || candellaState.unlockedFinal) return;
 
@@ -1524,9 +1524,9 @@ function verdantFrogLine(sectionId) {
 }
 
 function verdantKeeperHint() {
-  if (verdantState.visited.length >= 8) return "Order determines stability.";
-  if (verdantState.visited.length >= 4) return "Do not skip sections.";
-  return "Consult the archive.";
+  if (verdantState.visited.length >= 10) return "True sequence is not immediately apparent. Seek deeper connections."; // Increased visits
+  if (verdantState.visited.length >= 6) return "The archive guards its true path. Read carefully."; // Increased visits
+  return "Consult the archive. The truth is in the order.";
 }
 
 function handleRouteSubmit(event) {
@@ -1642,9 +1642,9 @@ function renderGlassStatus() {
 }
 
 function glassKeeperLine() {
-  if (glassState.corruptionLevel >= 8) return "Echo saturation complete.";
-  if (glassState.corruptionLevel >= 5) return "...stop observing echoes too closely.";
-  if (glassState.corruptionLevel >= 3) return "Do not trust repeated statements.";
+  if (glassState.corruptionLevel >= 12) return "Echo saturation complete. The reflections have caught up."; // Increased corruption level
+  if (glassState.corruptionLevel >= 7) return "Observe with patience. The echoes will reveal themselves."; // Increased corruption level
+  if (glassState.corruptionLevel >= 4) return "The reflections shift. Do not seek easy answers."; // Increased corruption level
   return "Echo synchronization is nominal.";
 }
 
@@ -1655,9 +1655,9 @@ function glassFrogLine(shardId) {
 }
 
 function maybeCompleteGlass() {
-  const allShardsRepeated = Object.values(glassState.shardClicks).every((count) => count >= 2);
+  const allShardsRepeated = Object.values(glassState.shardClicks).every((count) => count >= 3); // Increased to 3 clicks per shard
 
-  if (glassState.corruptionLevel < 14 || glassState.echoQueue.length < 10 || !allShardsRepeated) return;
+  if (glassState.corruptionLevel < 18 || glassState.echoQueue.length < 12 || !allShardsRepeated) return; // Increased corruption and echo count
 
   glassState.completed = true;
   elements.continueButton.classList.remove("is-hidden");
@@ -1726,10 +1726,10 @@ function rainKeeperLine() {
 }
 
 function maybeCompleteRain() {
-  const stableTouched = ["path", "certainty", "repetition"].every((itemId) => rainState.items[itemId].drift >= 2);
-  const marketFullySampled = Object.values(rainState.items).every((item) => item.drift >= 2);
+  const stableTouched = ["path", "certainty", "repetition"].every((itemId) => rainState.items[itemId].drift >= 3); // Increased drift for stable items
+  const marketFullySampled = Object.values(rainState.items).every((item) => item.drift >= 3); // Increased drift for all items
 
-  if (rainState.globalDriftLevel < 21 || !stableTouched || !marketFullySampled) return;
+  if (rainState.globalDriftLevel < 28 || !stableTouched || !marketFullySampled) return; // Increased global drift level
 
   rainState.completed = true;
   elements.continueButton.classList.remove("is-hidden");
@@ -1751,16 +1751,16 @@ function handleGateSubmit(event) {
   renderGateStatus();
 
   if (Object.values(gateState.locks).some((value) => !value)) {
-    setDialogueText("Frog", "The gate isn't hearing all four systems yet.");
+    setDialogueText("Frog", "The gate isn\'t hearing all four systems yet. Every lock must be set."); // More explicit hint
     return;
   }
 
   if (isFullyConsistentGate()) {
-    setDialogueText("Frog", "I thought everything had to make sense... but this is too clean. It won't hold.");
+    setDialogueText("Frog", "I thought everything had to make sense... but this is too clean. It won\'t hold.");
     return;
   }
 
-  if (isGateSolution() && gateState.attempts >= 2) {
+  if (isGateSolution() && gateState.attempts >= 3) { // Increased attempts for final gate
     gateState.completed = true;
     gateState.alignmentState = "paradox satisfied";
     elements.continueButton.classList.remove("is-hidden");
@@ -1771,16 +1771,16 @@ function handleGateSubmit(event) {
   }
 
   if (isGateSolution()) {
-    setDialogueText("Frog", "But maybe it only has to hold together. Even if it doesn't agree with itself.");
+    setDialogueText("Frog", "This feels right, but something needs to be confirmed. The Gate needs more conviction."); // Hint for multiple submissions
     return;
   }
 
   if (gateState.contradictionScore >= 3) {
-    setDialogueText("Time Keeper", "Do not attempt full consistency.");
+    setDialogueText("Time Keeper", "Do not attempt full consistency. The path is not straight."); // More explicit hint
     return;
   }
 
-  setDialogueText("Frog", "This is broken, but not in the right shape.");
+  setDialogueText("Frog", "This is broken, but not in the right shape. The Gate is not aligning."); // More explicit hint
 }
 
 function calculateGateContradictionScore() {
@@ -1790,7 +1790,9 @@ function calculateGateContradictionScore() {
   if (gateState.locks.rail === "wrong_station") score += 1;
   if (gateState.locks.echo === "accepted_contradiction") score += 1;
   if (gateState.locks.memory === "drifting") score += 1;
-  if (isFullyConsistentGate()) score = 0;
+  
+  // Remove the condition that resets score if fully consistent, to make it harder to accidentally get a high score
+  // if (isFullyConsistentGate()) score = 0;
 
   return score;
 }
