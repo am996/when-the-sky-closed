@@ -1540,15 +1540,19 @@ function hideSpectrogramPuzzle() {
 function handleSpectrogramSubmit(event) {
   if (event) event.preventDefault();
   const decodedLink = elements.spectrogramInput.value.trim();
-  const correctLink = "https://drive.google.com/drive/folders/1lfXAMho3-IccE5l_mpiSult5_WJ-m58o?usp=drive_link";
 
-  if (decodedLink === correctLink) {
+  if (isCorrectSpectrogramLink(decodedLink)) {
     state.completed = true; // Mark puzzle as completed
     elements.continueButton.classList.remove("is-hidden");
     setDialogueText("Frog", "That's it! A hidden archive. This must be where the researchers stored their final thoughts.");
   } else {
     setDialogueText("Frog", "That doesn't seem right. The signal is distorted, but the message should be clear once decoded.");
   }
+}
+
+function isCorrectSpectrogramLink(value) {
+  const folderId = "1lfXAMho3-IccE5l_mpiSult5_WJ-m58o";
+  return value.includes(folderId) && value.includes("drive.google.com");
 }
 
 function revealCurrentVoiceAfterUnmute() {
