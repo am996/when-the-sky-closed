@@ -1969,7 +1969,10 @@ function advanceDialogue() {
     return;
   }
 
-  if (scene.type === "puzzle") return;
+  if (scene.type === "puzzle") {
+    if (state.completed) completePuzzle();
+    return;
+  }
 
   state.lineIndex += 1;
 
