@@ -380,6 +380,7 @@ const scenes = [
     note("Massive light erupts", "flash"),
     note("Music distorts", "shake"),
     note("Screen shakes violently", "shake"),
+    note("The gate goes dark.", "jumpscare"),
     tkReleased("Finally.", "shake"),
     note("FLASH", "flash"),
     note("A strange image cuts through the light.", "corrupt"),
@@ -404,6 +405,46 @@ const state = {
   activeMusic: "",
   spriteSwapId: 0,
   completed: false
+};
+
+const storyState = {
+  phase: 1,
+  insights: {
+    identityPersistsThroughChange: false,
+    truthRequiresBrokenSequence: false,
+    contradictionCanRemainTrue: false,
+    meaningSurvivesDrift: false,
+    paradoxCanHoldTogether: false
+  },
+  phaseTwoActive: false,
+  researcherSeen: []
+};
+
+const researcherFragments = {
+  identityErosion: {
+    label: "Identity Erosion Fragment",
+    text: "I was Dr. I was she was we were. Name failed first. The sky did not fall. It agreed too completely."
+  },
+  observerCorruption: {
+    label: "Observer Corruption Fragment",
+    text: "You clicked this after you clicked it. I remember the route you have not taken yet. Please stop proving me right."
+  },
+  emotionalInversion: {
+    label: "Emotional Inversion Fragment",
+    text: "The safe room was beautiful. The beautiful room was unbearable. Comfort kept screaming after it became quiet."
+  },
+  temporalLoop: {
+    label: "Temporal Looping Fragment",
+    text: "This is the first time I have said this. This is the first time I have said this differently."
+  },
+  skyWitness: {
+    label: "Sky Witness Fragment",
+    text: "Stars folded inward. Horizons sealed. The world became one surface, and no one could stand apart from it."
+  },
+  frogAccusation: {
+    label: "Researcher Fragment",
+    text: "Frog left before the sky finished closing. Frog left before we became one thing. Frog remembers by refusing to remember."
+  }
 };
 
 const candellaState = {
@@ -483,6 +524,7 @@ const verdantState = {
   validPathProgress: 0,
   confirmedOnce: false,
   completed: false,
+  misreadCount: 0,
   sectionStates: {
     overview: { unlocked: true },
     anomaly: { unlocked: true },
@@ -530,6 +572,13 @@ const glassState = {
     memory: 0,
     frog: 0
   },
+  awaitingEcho: false,
+  resolvedEchoes: {
+    room: 0,
+    safe: 0,
+    memory: 0,
+    frog: 0
+  },
   completed: false,
   timers: []
 };
@@ -568,6 +617,15 @@ const rainState = {
   },
   tradeHistory: [],
   globalDriftLevel: 0,
+  activeItem: "",
+  evidence: {
+    path: { keep: 0, trade: 0 },
+    certainty: { keep: 0, trade: 0 },
+    repetition: { keep: 0, trade: 0 },
+    beginning: { keep: 0, trade: 0 },
+    sound: { keep: 0, trade: 0 },
+    shelter: { keep: 0, trade: 0 }
+  },
   completed: false
 };
 
@@ -581,6 +639,7 @@ const gateState = {
   contradictionScore: 0,
   alignmentState: "unstable",
   attempts: 0,
+  nearMisses: 0,
   completed: false
 };
 
@@ -599,6 +658,8 @@ const elements = {
   frontBackground: document.querySelector(".background-layer--front"),
   sprite: document.querySelector("#sprite"),
   speaker: document.querySelector("#speaker"),
+  speakerTitle: document.querySelector("#speakerTitle"),
+  dialoguePortrait: document.querySelector("#dialoguePortrait"),
   dialogueText: document.querySelector("#dialogueText"),
   dialogueBox: document.querySelector("#dialogueBox"),
   continueButton: document.querySelector("#continueButton"),
@@ -631,14 +692,23 @@ const elements = {
   rainStatus: document.querySelector("#rainStatus"),
   stallButtons: document.querySelectorAll(".stall"),
   marketCard: document.querySelector("#marketCard"),
+  keepMeaning: document.querySelector("#keepMeaning"),
+  tradeMeaning: document.querySelector("#tradeMeaning"),
   gateNode: document.querySelector("#gateNode"),
   gateForm: document.querySelector("#gateForm"),
-  gateStatus: document.querySelector("#gateStatus")
+  gateStatus: document.querySelector("#gateStatus"),
+  jumpscareOverlay: document.querySelector("#jumpscareOverlay"),
+  researcherFragment: document.querySelector("#researcherFragment"),
+  researcherLabel: document.querySelector("#researcherLabel"),
+  researcherText: document.querySelector("#researcherText")
 };
 
 const music = new Audio();
 music.loop = true;
 music.volume = 0.34;
+
+const jumpscareSound = new Audio("assets/sound/Jumpscare Sound Effect.mp3");
+jumpscareSound.volume = 0.75;
 
 let audioContext;
 
@@ -917,6 +987,8 @@ function updateAudioButton() {
 
 function clearEffects() {
   elements.game.classList.remove("is-shaking", "is-corrupt", "is-flashing", "is-blackout");
+  elements.jumpscareOverlay.classList.add("is-hidden");
+  elements.jumpscareOverlay.classList.remove("is-active");
 }
 
 function applyEffect(effect) {
@@ -931,6 +1003,27 @@ function applyEffect(effect) {
     elements.game.classList.add("is-blackout");
     setBackground(B.black);
   }
+  if (effect === "jumpscare") {
+    triggerJumpscare();
+  }
+}
+
+function triggerJumpscare() {
+  elements.game.classList.add("is-blackout");
+  elements.jumpscareOverlay.classList.remove("is-hidden");
+  requestAnimationFrame(() => {
+    elements.jumpscareOverlay.classList.add("is-active");
+  });
+
+  if (!state.muted) {
+    jumpscareSound.currentTime = 0;
+    jumpscareSound.play().catch(() => {});
+  }
+
+  window.setTimeout(() => {
+    elements.jumpscareOverlay.classList.add("is-hidden");
+    elements.jumpscareOverlay.classList.remove("is-active");
+  }, 950);
 }
 
 function showDialogueLine() {
@@ -946,6 +1039,8 @@ function showDialogueLine() {
   elements.dialogueBox.classList.remove("is-hidden");
   elements.continueButton.classList.remove("is-hidden");
   elements.speaker.textContent = line.narration ? scene.title : line.speaker;
+  elements.speakerTitle.textContent = line.narration ? "System Record" : speakerTitleFor(line.speaker);
+  setDialoguePortraitForSpeaker(line.narration ? "Event" : line.speaker);
   elements.dialogueText.textContent = line.text;
   elements.stage.dataset.position = line.position || "center";
   elements.stage.dataset.speaker = line.speaker || "Event";
@@ -1102,7 +1197,8 @@ function showCandellaPuzzle() {
 
   if (candellaState.completed) {
     elements.continueButton.classList.remove("is-hidden");
-    setCandellaDialogue("Frog", "Candella feels steadier now. Not fixed exactly... steadier.");
+    setCandellaDialogue("Frog", storyState.phaseTwoActive ? "My notes changed while I wasn't here. Candy Gate still says start, but it sounds like warning now." : "Candella feels steadier now. Not fixed exactly... steadier.");
+    maybeResearcherInterrupt("candella");
     return;
   }
 
@@ -1135,6 +1231,7 @@ function showVerdantPuzzle() {
 
   if (verdantState.completed) {
     setDialogueText("Frog", "The route finally reads like one railway instead of four different memories.");
+    maybeResearcherInterrupt("verdant");
     return;
   }
 
@@ -1199,12 +1296,95 @@ function hideFinalGatePuzzle() {
 
 function setDialogueText(speaker, text) {
   elements.speaker.textContent = speaker;
+  elements.speakerTitle.textContent = speakerTitleFor(speaker);
+  setDialoguePortraitForSpeaker(speaker);
   elements.dialogueText.textContent = text;
   playVoice({ speaker, text, narration: false });
 }
 
+function speakerTitleFor(speaker) {
+  if (speaker === "Frog") return "Lost Traveler";
+  if (speaker === "Time Keeper") return storyState.phaseTwoActive ? "Aligned System" : "Chronal Guide";
+  if (speaker === "Event") return "World State";
+  if (speaker.includes("Researcher")) return "Observer Fragment";
+  return "Archive Voice";
+}
+
+function setDialoguePortraitForSpeaker(speaker) {
+  if (speaker === "Frog") {
+    elements.dialoguePortrait.src = S.frogThink;
+    return;
+  }
+
+  if (speaker === "Time Keeper") {
+    elements.dialoguePortrait.src = storyState.phaseTwoActive ? S.timeKeeperAlt : S.timeKeeper;
+    return;
+  }
+
+  elements.dialoguePortrait.src = "";
+}
+
+function recordInsight(insightKey) {
+  if (!storyState.insights[insightKey]) {
+    storyState.insights[insightKey] = true;
+  }
+}
+
+function hasPhaseOneUnderstanding() {
+  return (
+    storyState.insights.identityPersistsThroughChange &&
+    storyState.insights.truthRequiresBrokenSequence &&
+    storyState.insights.contradictionCanRemainTrue &&
+    storyState.insights.meaningSurvivesDrift
+  );
+}
+
+function activatePhaseTwoFragments() {
+  storyState.phase = 2;
+  storyState.phaseTwoActive = true;
+  elements.game.classList.add("is-phase-two");
+  showResearcherFragment("skyWitness");
+}
+
+function showResearcherFragment(fragmentKey) {
+  const fragment = researcherFragments[fragmentKey];
+
+  if (!fragment) return;
+
+  if (!storyState.researcherSeen.includes(fragmentKey)) {
+    storyState.researcherSeen.push(fragmentKey);
+  }
+
+  elements.researcherLabel.textContent = fragment.label;
+  elements.researcherText.textContent = fragment.text;
+  elements.researcherFragment.classList.remove("is-hidden");
+
+  window.setTimeout(() => {
+    elements.researcherFragment.classList.add("is-hidden");
+  }, 6500);
+}
+
+function maybeResearcherInterrupt(trigger) {
+  if (!storyState.phaseTwoActive) return;
+
+  const triggerMap = {
+    candella: "identityErosion",
+    verdant: "observerCorruption",
+    glass: "temporalLoop",
+    rain: "emotionalInversion",
+    frog: "frogAccusation"
+  };
+  const fragmentKey = triggerMap[trigger];
+
+  if (!fragmentKey || storyState.researcherSeen.includes(fragmentKey)) return;
+
+  showResearcherFragment(fragmentKey);
+}
+
 function setCandellaDialogue(speaker, text) {
   elements.speaker.textContent = speaker;
+  elements.speakerTitle.textContent = speakerTitleFor(speaker);
+  setDialoguePortraitForSpeaker(speaker);
   elements.dialogueText.textContent = text;
   elements.candellaTimeKeeper.classList.toggle("is-visible", speaker === "Time Keeper");
 
@@ -1269,6 +1449,12 @@ function maybeAddMemoryNote(fragmentId) {
 function renderMemoryNotes() {
   elements.memoryList.innerHTML = "";
 
+  if (storyState.phaseTwoActive) {
+    const item = document.createElement("li");
+    item.textContent = "These notes were written before they were observed. Frog's handwriting is almost correct.";
+    elements.memoryList.append(item);
+  }
+
   if (candellaState.notes.length === 0) {
     const item = document.createElement("li");
     item.textContent = "Watch what still means the same thing after it changes.";
@@ -1284,7 +1470,7 @@ function renderMemoryNotes() {
 }
 
 function maybeShowTimeKeeperHint() {
-  const hintLevel = candellaState.totalClicks >= 10 ? 3 : candellaState.totalClicks >= 5 ? 2 : candellaState.totalClicks >= 1 ? 1 : 0;
+  const hintLevel = candellaState.totalClicks >= 8 ? 3 : candellaState.totalClicks >= 4 ? 2 : candellaState.totalClicks >= 1 ? 1 : 0;
 
   if (hintLevel <= candellaState.keeperHintLevel) return;
 
@@ -1296,16 +1482,17 @@ function maybeShowTimeKeeperHint() {
 }
 
 function timeKeeperCandellaHint() {
-   if (candellaState.totalClicks >= 15) return "...do not rely on fixed interpretation. The world does not stay still.";
-   if (candellaState.totalClicks >= 8) return "Observe what remains, not what shifts.";
+   if (candellaState.totalClicks >= 8) return "...do not rely on fixed interpretation. The world does not stay still.";
+   if (candellaState.totalClicks >= 4) return "Observe what remains, not what shifts.";
    return "Restore the parade fragments.";
 }
 
 function maybeUnlockStabilitySelection() {
-  const allRevisited = Object.values(candellaState.fragmentClicks).every((count) => count >= 3); // Increased to 3 clicks
-  const enoughInstability = candellaState.totalClicks >= 20; // Increased to 20 total clicks
+  const allRevisited = Object.values(candellaState.fragmentClicks).every((count) => count >= 2);
+  const enoughInstability = candellaState.totalClicks >= 12;
+  const enoughNotes = candellaState.notes.length >= 5;
 
-  if (!allRevisited || !enoughInstability || candellaState.unlockedFinal) return;
+  if (!allRevisited || !enoughInstability || !enoughNotes || candellaState.unlockedFinal) return;
 
   candellaState.unlockedFinal = true;
   elements.stabilityPanel.classList.remove("is-hidden");
@@ -1326,10 +1513,18 @@ function handleStabilitySubmit(event) {
     return;
   }
 
-  const underObserved = selected.some((fragmentId) => candellaState.fragmentClicks[fragmentId] < 3);
+  const underObserved = selected.some((fragmentId) => candellaState.fragmentClicks[fragmentId] < 2);
 
   if (underObserved) {
-    setCandellaDialogue("Frog", "I don't think I've watched those long enough yet. One more look might matter.");
+    setCandellaDialogue("Frog", "I don't think I've watched those long enough yet. I need a note before I trust it.");
+    return;
+  }
+
+  const stableEvidence = selected.every((fragmentId) => candellaState.notes.includes(candellaFragments[fragmentId].note));
+  const unstableEvidence = ["laughter_cart", "broken_wagon"].every((fragmentId) => candellaState.notes.includes(candellaFragments[fragmentId].note));
+
+  if (!stableEvidence || !unstableEvidence) {
+    setCandellaDialogue("Frog", "I need notes on what changed and what didn't. Guessing feels too much like the parade lying.");
     return;
   }
 
@@ -1337,6 +1532,7 @@ function handleStabilitySubmit(event) {
 
   if (stableSelections === 3) {
     candellaState.completed = true;
+    recordInsight("identityPersistsThroughChange");
     elements.stabilityPanel.classList.add("is-hidden");
     elements.continueButton.classList.remove("is-hidden");
     setCandellaDialogue("Frog", "...so it wasn't about order.");
@@ -1400,6 +1596,7 @@ function updateVerdantProgress(sectionId) {
     verdantState.validPathProgress += 1;
     if (verdantState.confirmedOnce && verdantState.validPathProgress === 4) {
       verdantState.completed = true;
+      recordInsight("truthRequiresBrokenSequence");
       elements.routePanel.classList.add("is-hidden");
       elements.continueButton.classList.remove("is-hidden");
       setDialogueText("Frog", "So the answer wasn't inside the document. It was the way through it.");
@@ -1407,6 +1604,9 @@ function updateVerdantProgress(sectionId) {
     return;
   }
 
+  if (verdantState.attemptPath.length > 1) {
+    verdantState.misreadCount += 1;
+  }
   verdantState.validPathProgress = sectionId === "overview" ? 1 : 0;
 }
 
@@ -1442,6 +1642,13 @@ function renderArchivePage(sectionId) {
 }
 
 function verdantSectionContent(sectionId) {
+  if (storyState.phaseTwoActive && sectionId === "anomaly") {
+    return {
+      title: "Anomaly Log",
+      body: "Observer fragments detected between stations. They are not ghosts. They are partial alignments remembering the researchers incorrectly."
+    };
+  }
+
   const firstRead = verdantState.visited.filter((visitedId) => visitedId === sectionId).length === 1;
   const path = verdantState.attemptPath.join(">");
   const onValidPath = path.endsWith("overview>anomaly>stationIndex>transit") || verdantState.validPathProgress > verdantSections[sectionId].order;
@@ -1512,7 +1719,7 @@ function verdantStatusText() {
   if (verdantState.truthState.coherentTransit) return "Document state: route phrase generated";
   if (verdantState.truthState.coherentIndex) return "Document state: station index stabilized";
   if (verdantState.truthState.keyedByAnomaly) return "Document state: anomaly key accepted";
-  return "Document state: unresolved";
+  return `Document state: unresolved / scars ${verdantState.misreadCount}:2`;
 }
 
 function verdantFrogLine(sectionId) {
@@ -1547,6 +1754,11 @@ function handleRouteSubmit(event) {
     return;
   }
 
+  if (verdantState.misreadCount < 2) {
+    setDialogueText("Frog", "I think we found a path too cleanly. The archive wants us to notice what goes wrong first.");
+    return;
+  }
+
   if (!verdantState.confirmedOnce) {
     verdantState.confirmedOnce = true;
     resetVerdantForConfirmationPass();
@@ -1562,6 +1774,7 @@ function handleRouteSubmit(event) {
   }
 
   verdantState.completed = true;
+  recordInsight("truthRequiresBrokenSequence");
   elements.routePanel.classList.add("is-hidden");
   elements.continueButton.classList.remove("is-hidden");
   setDialogueText("Frog", "So the answer wasn't inside the document. It was the way through it.");
@@ -1583,6 +1796,12 @@ function resetVerdantForConfirmationPass() {
 function handleShardClick(shardId) {
   if (glassState.completed) return;
 
+  if (glassState.awaitingEcho) {
+    appendEchoLine("System", "Echo collision. The last reflection has not arrived yet.", true);
+    setDialogueText("Frog", "If I rush it, the echo stops counting as mine.");
+    return;
+  }
+
   prepareAudioForInteraction();
   playFragmentTone(shardId);
   glassState.actions.push(shardId);
@@ -1590,11 +1809,14 @@ function handleShardClick(shardId) {
   glassState.corruptionLevel += 1;
   appendEchoLine("Frog", glassShards[shardId].normal, false);
   setDialogueText("Frog", glassFrogLine(shardId));
+  glassState.awaitingEcho = true;
 
   const delay = 3500 + Math.floor(Math.random() * 4200);
   const timer = window.setTimeout(() => {
     if (currentScene().type !== "glassPuzzle" || glassState.completed) return;
     glassState.echoQueue.push(shardId);
+    glassState.resolvedEchoes[shardId] += 1;
+    glassState.awaitingEcho = false;
     appendEchoLine("Frog (echo)", glassEchoText(shardId), true);
     mutateEchoHistory();
     renderGlassStatus();
@@ -1631,7 +1853,7 @@ function mutateEchoHistory() {
 
 function renderGlassLog() {
   if (elements.echoLog.children.length === 0) {
-    appendEchoLine("System", "Echoes will appear after observation.", false);
+    appendEchoLine("System", storyState.phaseTwoActive ? "Echo detected before observation. This should not be possible." : "Echoes will appear after observation.", false);
   }
 
   renderGlassStatus();
@@ -1655,12 +1877,15 @@ function glassFrogLine(shardId) {
 }
 
 function maybeCompleteGlass() {
-  const allShardsRepeated = Object.values(glassState.shardClicks).every((count) => count >= 3); // Increased to 3 clicks per shard
+  const allShardsRepeated = Object.values(glassState.shardClicks).every((count) => count >= 2);
+  const allEchoesResolved = Object.values(glassState.resolvedEchoes).every((count) => count >= 2);
 
-  if (glassState.corruptionLevel < 18 || glassState.echoQueue.length < 12 || !allShardsRepeated) return; // Increased corruption and echo count
+  if (glassState.corruptionLevel < 12 || glassState.echoQueue.length < 8 || !allShardsRepeated || !allEchoesResolved) return;
 
   glassState.completed = true;
+  recordInsight("contradictionCanRemainTrue");
   elements.continueButton.classList.remove("is-hidden");
+  maybeResearcherInterrupt("glass");
   setDialogueText("Time Keeper", "Echo saturation complete. Proceeding to containment phase.");
 }
 
@@ -1669,9 +1894,26 @@ function handleStallClick(itemId) {
 
   prepareAudioForInteraction();
   playFragmentTone(itemId);
-  rainState.tradeHistory.push(itemId);
+  rainState.activeItem = itemId;
+  renderRainMarket(itemId);
+  setDialogueText("Frog", "This one has a price, but I don't know yet whether to keep it or trade it.");
+}
+
+function resolveMeaningChoice(choice) {
+  if (rainState.completed) return;
+
+  if (!rainState.activeItem) {
+    setDialogueText("Frog", "I need to inspect a stall before I can decide what it means.");
+    return;
+  }
+
+  const itemId = rainState.activeItem;
+
+  prepareAudioForInteraction();
+  rainState.tradeHistory.push(`${choice}:${itemId}`);
   rainState.globalDriftLevel += 1;
   rainState.items[itemId].drift += 1;
+  rainState.evidence[itemId][choice] += 1;
 
   Object.keys(rainState.items).forEach((key) => {
     if (key !== itemId && !rainState.items[key].stable) {
@@ -1680,7 +1922,7 @@ function handleStallClick(itemId) {
   });
 
   renderRainMarket(itemId);
-  setDialogueText("Frog", rainFrogLine());
+  setDialogueText("Frog", choice === "keep" ? rainKeepLine(itemId) : rainTradeLine(itemId));
   maybeCompleteRain();
 }
 
@@ -1719,20 +1961,36 @@ function rainFrogLine() {
   return "Why does everything here feel like it already changed after I looked away?";
 }
 
+function rainKeepLine(itemId) {
+  if (rainState.items[itemId].stable) return "Keeping it doesn't freeze it. It just shows what feeling keeps returning.";
+  return "When I keep this, it starts pretending harder.";
+}
+
+function rainTradeLine(itemId) {
+  if (rainState.items[itemId].stable) return "Trading it changes the label, but the feeling comes back.";
+  return "Trading this makes the disguise easier to see.";
+}
+
 function rainKeeperLine() {
+  if (storyState.phaseTwoActive) return "Value drift has become observer drift.";
   if (rainState.globalDriftLevel >= 10) return "Do not assign permanence to meaning.";
   if (rainState.globalDriftLevel >= 5) return "Value drift is within expected range.";
   return "Exchange will stabilize perception.";
 }
 
 function maybeCompleteRain() {
-  const stableTouched = ["path", "certainty", "repetition"].every((itemId) => rainState.items[itemId].drift >= 3); // Increased drift for stable items
-  const marketFullySampled = Object.values(rainState.items).every((item) => item.drift >= 3); // Increased drift for all items
+  const stableTouched = ["path", "certainty", "repetition"].every((itemId) => {
+    return rainState.evidence[itemId].keep >= 1 && rainState.evidence[itemId].trade >= 1 && rainState.items[itemId].drift >= 2;
+  });
+  const marketFullySampled = Object.values(rainState.items).every((item) => item.drift >= 1);
+  const unstableExposed = ["beginning", "sound", "shelter"].every((itemId) => rainState.evidence[itemId].trade >= 2);
 
-  if (rainState.globalDriftLevel < 28 || !stableTouched || !marketFullySampled) return; // Increased global drift level
+  if (rainState.globalDriftLevel < 16 || !stableTouched || !marketFullySampled || !unstableExposed) return;
 
   rainState.completed = true;
+  recordInsight("meaningSurvivesDrift");
   elements.continueButton.classList.remove("is-hidden");
+  maybeResearcherInterrupt("rain");
   setDialogueText("Time Keeper", "Good.");
 }
 
@@ -1746,6 +2004,7 @@ function handleGateSubmit(event) {
   gateState.locks.rail = form.get("rail");
   gateState.locks.echo = form.get("echo");
   gateState.locks.memory = form.get("memory");
+  const witness = normalizeWitnessPhrase(form.get("witness") || "");
   gateState.attempts += 1;
   gateState.contradictionScore = calculateGateContradictionScore();
   renderGateStatus();
@@ -1760,13 +2019,32 @@ function handleGateSubmit(event) {
     return;
   }
 
+  if (!isWitnessPhraseValid(witness)) {
+    setDialogueText("Frog", "The locks are only half of it. The gate wants what survived written back to it.");
+    return;
+  }
+
+  if (!hasPhaseOneUnderstanding()) {
+    setDialogueText("Frog", "We know the settings, but not what they mean yet. The gate is waiting for us to understand the worlds, not just repeat them.");
+    return;
+  }
+
   if (isGateSolution() && gateState.attempts >= 3) { // Increased attempts for final gate
+    if (gateState.nearMisses < 1) {
+      setDialogueText("Frog", "It fits too neatly. We need to feel one almost-collapse before the gate believes us.");
+      return;
+    }
+
     gateState.completed = true;
+    recordInsight("paradoxCanHoldTogether");
     gateState.alignmentState = "paradox satisfied";
     elements.continueButton.classList.remove("is-hidden");
     elements.game.classList.add("is-corrupt");
     renderGateStatus();
     setDialogueText("Time Keeper", "Good. ...you learned the system.");
+    window.setTimeout(() => {
+      activatePhaseTwoFragments();
+    }, 1600);
     return;
   }
 
@@ -1776,6 +2054,7 @@ function handleGateSubmit(event) {
   }
 
   if (gateState.contradictionScore >= 3) {
+    gateState.nearMisses += 1;
     setDialogueText("Time Keeper", "Do not attempt full consistency. The path is not straight."); // More explicit hint
     return;
   }
@@ -1816,8 +2095,17 @@ function isGateSolution() {
 }
 
 function renderGateStatus() {
-  const score = gateState.contradictionScore;
-  elements.gateStatus.textContent = `Alignment state: ${gateState.alignmentState} / contradiction ${score}:4`;
+  const labels = ["unresolved", "bending", "fractured", "nearly holding", "paradox-ready"];
+  elements.gateStatus.textContent = `Alignment state: ${gateState.alignmentState} / ${labels[gateState.contradictionScore]}`;
+}
+
+function normalizeWitnessPhrase(value) {
+  return value.toLowerCase().replace(/[^a-z]+/g, " ").trim();
+}
+
+function isWitnessPhraseValid(value) {
+  const required = ["start", "path", "glasshollow", "drift"];
+  return required.every((word) => value.includes(word));
 }
 
 function gateKeeperLine() {
@@ -2036,6 +2324,8 @@ elements.shardButtons.forEach((button) => {
 elements.stallButtons.forEach((button) => {
   button.addEventListener("click", () => handleStallClick(button.dataset.item));
 });
+elements.keepMeaning.addEventListener("click", () => resolveMeaningChoice("keep"));
+elements.tradeMeaning.addEventListener("click", () => resolveMeaningChoice("trade"));
 elements.gateForm.addEventListener("submit", handleGateSubmit);
 
 window.addEventListener("keydown", (event) => {

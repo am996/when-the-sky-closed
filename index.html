@@ -12,6 +12,13 @@
       <div class="background-layer background-layer--front" aria-hidden="true"></div>
       <div class="atmosphere" aria-hidden="true"></div>
       <div class="effect-overlay" aria-hidden="true"></div>
+      <div class="jumpscare-overlay is-hidden" id="jumpscareOverlay" aria-hidden="true">
+        <img src="assets/sprites/jumpscare.png" alt="" />
+      </div>
+      <aside class="researcher-fragment is-hidden" id="researcherFragment" aria-live="polite">
+        <p class="researcher-label" id="researcherLabel">Observer Fragment</p>
+        <p class="researcher-text" id="researcherText"></p>
+      </aside>
 
       <button class="audio-toggle" id="audioToggle" type="button" aria-pressed="false">
         Sound Off
@@ -37,6 +44,7 @@
 
         <aside class="memory-notes" id="memoryNotes" aria-live="polite">
           <p class="memory-title">Frog's Notes</p>
+          <p class="node-guidance">Revisit every fragment. The useful clue is what keeps its role after it changes.</p>
           <ul id="memoryList"></ul>
         </aside>
 
@@ -57,6 +65,7 @@
           <div class="verdant-header">
             <p class="verdant-kicker">Verdant Rail Archive</p>
             <p class="verdant-status" id="verdantStatus">Document state: unresolved</p>
+            <p class="node-guidance">Read sections as a path. Wrong paths leave useful scars.</p>
           </div>
 
           <div class="section-tabs" id="sectionTabs">
@@ -79,7 +88,7 @@
           <form class="route-panel is-hidden" id="routePanel">
             <p class="stability-title">Route Confirmation</p>
             <p class="stability-copy">Enter the section order that makes the document cohere.</p>
-            <input id="routeInput" type="text" autocomplete="off" placeholder="Example: overview, anomaly, index, transit" />
+            <input id="routeInput" type="text" autocomplete="off" placeholder="Use section names, in the order you proved" />
             <button class="stability-submit" type="submit">Confirm Reading Path</button>
           </form>
         </div>
@@ -89,6 +98,7 @@
         <div class="glass-panel">
           <p class="verdant-kicker">Glass Archive Room</p>
           <p class="verdant-status" id="glassStatus">Echo synchronization is nominal.</p>
+          <p class="node-guidance">Touch one shard, then wait for its echo. Collided echoes do not count.</p>
           <div class="shard-field">
             <button type="button" class="shard" data-shard="room">Room Shard</button>
             <button type="button" class="shard" data-shard="safe">Safety Shard</button>
@@ -103,6 +113,7 @@
         <div class="rain-panel">
           <p class="verdant-kicker">The Rain Market</p>
           <p class="verdant-status" id="rainStatus">Drift level: 0</p>
+          <p class="node-guidance">Inspect a stall, then choose whether to keep or trade its meaning.</p>
           <div class="stall-grid" id="stallGrid">
             <button type="button" class="stall" data-item="beginning">A warm beginning</button>
             <button type="button" class="stall" data-item="sound">A sound you almost remember</button>
@@ -112,6 +123,10 @@
             <button type="button" class="stall" data-item="shelter">A borrowed shelter</button>
           </div>
           <article class="market-card" id="marketCard">Choose a stall. Meanings are priced after inspection.</article>
+          <div class="market-actions">
+            <button type="button" id="keepMeaning">Keep Meaning</button>
+            <button type="button" id="tradeMeaning">Trade Meaning</button>
+          </div>
         </div>
       </section>
 
@@ -127,14 +142,15 @@
           <form class="gate-controls" id="gateForm">
             <p class="verdant-kicker">Collapsed Configuration</p>
             <p class="verdant-status" id="gateStatus">Alignment state: unstable</p>
+            <p class="node-guidance">The gate rejects perfect consistency. Give it a contradiction that still holds together.</p>
 
             <label>
               Candella Lock
               <select name="candella">
                 <option value="">Choose a failure state</option>
-                <option value="all_stable">All fragments stable</option>
-                <option value="stable_inside_drift">Stable set inside drift</option>
-                <option value="all_unstable">All fragments unstable</option>
+                <option value="all_stable">Preserve every fragment</option>
+                <option value="stable_inside_drift">Hold anchors inside drift</option>
+                <option value="all_unstable">Let the parade dissolve</option>
               </select>
             </label>
 
@@ -142,9 +158,9 @@
               Rail Lock
               <select name="rail">
                 <option value="">Choose a failure state</option>
-                <option value="valid_only">Valid route only</option>
-                <option value="wrong_station">Valid route plus wrong station</option>
-                <option value="erased">Route erased</option>
+                <option value="valid_only">Clean route only</option>
+                <option value="wrong_station">Route with a foreign station</option>
+                <option value="erased">Erase the route</option>
               </select>
             </label>
 
@@ -152,9 +168,9 @@
               Echo Lock
               <select name="echo">
                 <option value="">Choose a failure state</option>
-                <option value="consistent">Consistent echo</option>
-                <option value="accepted_contradiction">Contradiction accepted</option>
-                <option value="silenced">Echo silenced</option>
+                <option value="consistent">Force one reflection</option>
+                <option value="accepted_contradiction">Accept the contradiction</option>
+                <option value="silenced">Silence the echo</option>
               </select>
             </label>
 
@@ -162,10 +178,15 @@
               Memory Lock
               <select name="memory">
                 <option value="">Choose a failure state</option>
-                <option value="fixed">Meaning fixed</option>
-                <option value="drifting">Meaning allowed to drift</option>
-                <option value="inverted">Meaning inverted</option>
+                <option value="fixed">Fix the meaning</option>
+                <option value="drifting">Let meaning drift</option>
+                <option value="inverted">Invert the meaning</option>
               </select>
+            </label>
+
+            <label>
+              Witness Phrase
+              <input name="witness" type="text" autocomplete="off" placeholder="Assemble what survived the systems" />
             </label>
 
             <button class="stability-submit" type="submit">Submit Collapse</button>
@@ -186,8 +207,16 @@
       </section>
 
       <section class="dialogue-box" id="dialogueBox" aria-live="polite">
-        <p class="speaker" id="speaker">Time Keeper</p>
-        <p class="dialogue-text" id="dialogueText"></p>
+        <div class="dialogue-portrait" aria-hidden="true">
+          <img id="dialoguePortrait" alt="" />
+        </div>
+        <div class="dialogue-content">
+          <div class="speaker-plate">
+            <p class="speaker" id="speaker">Time Keeper</p>
+            <p class="speaker-title" id="speakerTitle">Chronal Guide</p>
+          </div>
+          <p class="dialogue-text" id="dialogueText"></p>
+        </div>
         <div class="dialogue-actions">
           <button class="back-button" id="backButton" type="button">
             <span aria-hidden="true">‹</span>
