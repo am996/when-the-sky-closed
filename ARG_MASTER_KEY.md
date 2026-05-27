@@ -47,10 +47,10 @@ Phase 2 now continues in-game after the Phase 1 gate release. The systems no lon
 In normal play, Phase 2 cannot be skipped:
 
 *   The HERTA archive scene only advances after the containment thesis is accepted.
-*   The spectrogram scene only advances after the exact decoded URL is submitted.
-*   The Final Seal only accepts its answer after the player has reached it through **Containment Choice**.
+*   The spectrogram scene only advances after the decoded Google Drive folder link is submitted.
+*   The Final Seal appears only after **Containment Choice** in normal play.
 
-The final seal phrase alone is not enough. If the game has not unlocked the containment choice state, Frog refuses with: `No... not yet. We have to understand what containment means before we choose it.`
+The final seal phrase alone is not enough unless the player is already on the Final Seal screen. If the game has not unlocked containment, Frog refuses with: `No... not yet. We have to understand what containment means before we choose it.`
 
 ### Researcher Fragments
 Researchers from the pregame are now integrated as **fragmented consciousnesses**, not ghosts. They are incomplete observer states, partially aligned humans trapped between realities.
@@ -173,10 +173,10 @@ Glasshollow teaches that contradiction is not automatically corruption. One trut
 
 ### ✅ Solution
 Set the dropdowns to these exact values:
-*   **Candella System:** `stable_inside_drift`
-*   **Railway Alignment:** `wrong_station`
-*   **Mirror Accord:** `accepted_contradiction`
-*   **Memory Core:** `drifting`
+*   **Candella Lock:** choose `Hold anchors inside drift` (`stable_inside_drift`)
+*   **Rail Lock:** choose `Route with a foreign station` (`wrong_station`)
+*   **Mirror Lock:** choose `Accept the contradiction` (`accepted_contradiction`)
+*   **Memory Lock:** choose `Let meaning drift` (`drifting`)
 
 Witness phrase examples:
 *   `start path glasshollow drift`
@@ -234,12 +234,20 @@ Example accepted thesis:
 *   The spectrogram scene appears after the HERTA contamination thesis is accepted.
 *   The looping tone is only a lightweight in-browser placeholder; the puzzle UI treats the decoded result as a URL.
 *   This gate should feel like an investigation handoff, not a cryptography wall.
-*   The player must submit the full decoded URL exactly.
+*   Current code accepts any pasted text that contains both `drive.google.com` and the folder ID `1lfXAMho3-IccE5l_mpiSult5_WJ-m58o`.
+*   This means the raw URL, a markdown link, or a Drive URL without the `?usp=drive_link` suffix should all work on a fresh load.
 
 ### ✅ Solution
-Submit:
+Preferred answer to submit:
 
 `https://drive.google.com/drive/folders/1lfXAMho3-IccE5l_mpiSult5_WJ-m58o?usp=drive_link`
+
+Minimum required text in the submitted answer:
+
+*   `drive.google.com`
+*   `1lfXAMho3-IccE5l_mpiSult5_WJ-m58o`
+
+If a team is already on an older loaded page, use the full raw URL exactly, not markdown.
 
 After the link is accepted, the game continues to the local **Researcher Recording** scene.
 
@@ -295,10 +303,21 @@ What actually triggers the ending sequence:
 4.  After that scene ends and the Final Seal panel returns, click **Activate Final Seal**.
 5.  That click starts the final ending cutscene, **The Sky Closed - Final Moments**.
 
-The phrase is normalized by the game, so capitalization and punctuation do not matter. The spelling currently must be `seperate`, matching the intended phrase.
+The phrase is normalized by the game, so capitalization and punctuation do not matter.
+
+Accepted Final Seal phrases on the current pushed build:
+
+*   `seperate differences reduced contradiction`
+*   `separate differences reduced contradiction`
+*   `let them remain different`
+*   Any phrase containing `differences`, `reduced`, `contradiction`, and either `seperate` or `separate`
+
+If a team is already on an older loaded page, use the exact phrase:
+
+`seperate differences reduced contradiction`
 
 ### Drive Note
-The Google Drive is not embedded as a visible page. The website asks players to type the decoded Drive folder URL into the Encoded Signal / Spectrogram Gate. Once the exact URL is submitted, the browser experience continues into the local Researcher Recording scene.
+The Google Drive is not embedded as a visible page. The website asks players to type the decoded Drive folder URL into the Encoded Signal / Spectrogram Gate. Once the accepted Drive link/folder ID is submitted, the browser experience continues into the local Researcher Recording scene.
 
 The final scene ends with:
 
